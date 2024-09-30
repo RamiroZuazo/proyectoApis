@@ -1,28 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Importar función de Firebase
+import { auth } from '../../firebase'; // Importar autenticación desde la configuración de Firebase
 
 export default () => {
     const navigate = useNavigate(); // Obtén la función navigate
-
-    // Lista de usuarios harcodeada
-    const users = [
-        { email: 'zuazo604@gmail.com', password: '1234' },
-        { email: 'user2@example.com', password: 'password2' }, // Otro usuario de ejemplo
-    ];
 
     // Estado para guardar los valores del formulario
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleLogin = () => {
-        // Lógica para validar el usuario
-        const userExists = users.some(user => user.email === email && user.password === password);
-        
-        if (userExists) {
+    const handleLogin = async () => {
+        try {
+            // Iniciar sesión con Firebase Authentication
+            await signInWithEmailAndPassword(auth, email, password);
             navigate('/Menu'); // Redirige a la página deseada si el usuario es válido
-        } else {
-            setErrorMessage('Usuario o contraseña incorrectos');
+        } catch (error) {
+            // Manejar errores de autenticación
+            if (error.code === 'auth/wrong-password') {
+                setErrorMessage('Contraseña incorrecta');
+            } else if (error.code === 'auth/user-not-found') {
+                setErrorMessage('Usuario no encontrado');
+            } else {
+                setErrorMessage('Error al iniciar sesión');
+            }
         }
     };
 

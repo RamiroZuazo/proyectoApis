@@ -1,6 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'; // IMPORTAR GOOGLELOGIN
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { createUserWithEmailAndPassword } from 'firebase/auth'; // Importar función de Firebase para registrar usuarios
+import { auth } from '../../firebase'; // Importar autenticación desde la configuración de Firebase
 
 export default () => {
     const navigate = useNavigate();
@@ -24,7 +26,7 @@ export default () => {
     };
 
     // Función de manejo del envío del formulario
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!name) {
             setErrorMessage('El nombre es obligatorio.');
             return;
@@ -40,8 +42,18 @@ export default () => {
             return;
         }
 
-        // Si todo está bien, redirigir al menú
-        navigate('/Menu');
+        try {
+            // Registra al usuario usando Firebase Authentication
+            await createUserWithEmailAndPassword(auth, email, password);
+            navigate('/Menu'); // Redirigir al menú si el registro es exitoso
+        } catch (error) {
+            // Manejo de errores al intentar registrar
+            if (error.code === 'auth/email-already-in-use') {
+                setErrorMessage('Este correo ya está registrado.');
+            } else {
+                setErrorMessage('Error al crear la cuenta. Inténtalo de nuevo.');
+            }
+        }
     };
 
     // Función que se ejecuta cuando el login de Google es exitoso
@@ -69,11 +81,11 @@ export default () => {
                                 Cree una cuenta y obtenga acceso a todas las funcionalidades. No se requiere tarjeta de crédito.
                             </p>
                             <div className="flex items-center -space-x-2 overflow-hidden">
+                                {/* Avatares de ejemplo */}
                                 <img src="https://randomuser.me/api/portraits/women/79.jpg" className="w-10 h-10 rounded-full border-2 border-white" />
                                 <img src="https://api.uifaces.co/our-content/donated/xZ4wg2Xj.jpg" className="w-10 h-10 rounded-full border-2 border-white" />
                                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=a72ca28288878f8404a795f39642a46f" className="w-10 h-10 rounded-full border-2 border-white" />
                                 <img src="https://randomuser.me/api/portraits/men/86.jpg" className="w-10 h-10 rounded-full border-2 border-white" />
-                                <img src="https://images.unsplash.com/photo-1510227272981-87123e259b17?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=3759e09a5b9fbe53088b23c615b6312e" className="w-10 h-10 rounded-full border-2 border-white" />
                                 <p className="text-sm text-gray-400 font-medium translate-x-5">
                                     Únase a más de 5.000 usuarios
                                 </p>
@@ -85,16 +97,15 @@ export default () => {
                         style={{
                             background: "linear-gradient(152.92deg, rgba(192, 132, 252, 0.2) 4.54%, rgba(232, 121, 249, 0.26) 34.2%, rgba(192, 132, 252, 0.1) 77.55%)", filter: "blur(118px)"
                         }}
-                    >
-                    </div>
+                    ></div>
                 </div>
                 <div className="flex-1 flex items-center justify-center h-screen">
                     <div className="w-full max-w-md space-y-8 px-4 bg-white text-gray-600 sm:px-0">
-                        <div className="">
+                        <div>
                             <Link to="/LandingPage"><img src="/images/logoTinclinadaBlack.png"  width={150} className="lg:hidden" /></Link>
                             <div className="mt-5 space-y-2">
                                 <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">Registrate</h3>
-                                <p className="">¿Ya tienes una cuenta? <Link to="/SignIn" className="font-medium text-indigo-600 hover:text-indigo-500">Inicia sesión</Link></p>
+                                <p>¿Ya tienes una cuenta? <Link to="/SignIn" className="font-medium text-indigo-600 hover:text-indigo-500">Inicia sesión</Link></p>
                             </div>
                         </div>
 
@@ -106,7 +117,6 @@ export default () => {
 
                         <div className="relative">
                             <span className="block w-full h-px bg-gray-300"></span>
-                            
                             <p className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto">O continuar con</p>
                         </div>
                         
@@ -115,9 +125,7 @@ export default () => {
                             className="space-y-5"
                         >
                             <div>
-                                <label className="font-medium">
-                                    Nombre
-                                </label>
+                                <label className="font-medium">Nombre</label>
                                 <input
                                     type="text"
                                     required
@@ -127,9 +135,7 @@ export default () => {
                                 />
                             </div>
                             <div>
-                                <label className="font-medium">
-                                    Correo
-                                </label>
+                                <label className="font-medium">Correo</label>
                                 <input
                                     type="email"
                                     required
@@ -139,9 +145,7 @@ export default () => {
                                 />
                             </div>
                             <div>
-                                <label className="font-medium">
-                                    Contraseña
-                                </label>
+                                <label className="font-medium">Contraseña</label>
                                 <input
                                     type="password"
                                     required
