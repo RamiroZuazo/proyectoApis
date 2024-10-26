@@ -1,15 +1,14 @@
-const { User } = require('../db/db'); // Asegúrate de importar el modelo User
+const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 
-// Crear un nuevo usuario
 const createUser = async (req, res) => {
-    const { nombre, email, contrasena } = req.body;
+    const { nombre, email, contraseña } = req.body; // Usa 'contraseña' en lugar de 'contrasena'
 
     try {
-        const newUser = await User.create({ nombre, email, contrasena });
+        const newUser = await User.create({ nombre, email, contraseña });
         res.status(201).json({ ok: true, message: 'Usuario creado correctamente', userId: newUser.id });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ ok: false, message: 'Error al crear el usuario', error: err });
+        console.error('Error al crear el usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al crear el usuario', error: err.message });
     }
 };
 
@@ -19,10 +18,11 @@ const getAllUsers = async (req, res) => {
         const users = await User.findAll();
         res.json({ ok: true, users });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ ok: false, message: 'Error al obtener usuarios', error: err });
+        console.error('Error al obtener usuarios:', err);
+        res.status(500).json({ ok: false, message: 'Error al obtener usuarios', error: err.message });
     }
 };
+
 
 
 // Obtener un usuario por ID
@@ -44,10 +44,10 @@ const getUserById = async (req, res) => {
 // Actualizar un usuario
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { nombre, email, contrasena } = req.body;
+    const { nombre, email, contraseña } = req.body;
 
     try {
-        const [updated] = await User.update({ nombre, email, contrasena }, { where: { id } });
+        const [updated] = await User.update({ nombre, email, contraseña }, { where: { id } });
         if (!updated) {
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }

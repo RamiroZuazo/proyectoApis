@@ -24,7 +24,7 @@ router.post('/',
             .isLength({ max: 100 })
             .withMessage("El email no puede exceder los 100 caracteres"),
         
-        check("contrasena")
+        check("contraseña")
             .not()
             .isEmpty()
             .withMessage("La contraseña es obligatoria")
