@@ -1,5 +1,6 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 
+// Crear un usuario
 const createUser = async (req, res) => {
     const { nombre, email, contraseña } = req.body; // Usa 'contraseña' en lugar de 'contrasena'
 
@@ -23,8 +24,6 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-
-
 // Obtener un usuario por ID
 const getUserById = async (req, res) => {
     const { id } = req.params;
@@ -36,8 +35,8 @@ const getUserById = async (req, res) => {
         }
         res.json({ ok: true, user });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ ok: false, message: 'Error al obtener el usuario', error: err });
+        console.error('Error al obtener el usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al obtener el usuario', error: err.message });
     }
 };
 
@@ -53,8 +52,8 @@ const updateUser = async (req, res) => {
         }
         res.json({ ok: true, message: 'Usuario actualizado correctamente' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ ok: false, message: 'Error al actualizar el usuario', error: err });
+        console.error('Error al actualizar el usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al actualizar el usuario', error: err.message });
     }
 };
 
@@ -69,8 +68,8 @@ const deleteUser = async (req, res) => {
         }
         res.json({ ok: true, message: 'Usuario eliminado correctamente' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ ok: false, message: 'Error al eliminar el usuario', error: err });
+        console.error('Error al eliminar el usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al eliminar el usuario', error: err.message });
     }
 };
 
