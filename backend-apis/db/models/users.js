@@ -1,5 +1,6 @@
+// db/models/users.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../db'); // Asegúrate de que esta ruta sea correcta
+const sequelize = require('../db');
 
 const User = sequelize.define('User', {
     id: {
@@ -23,11 +24,15 @@ const User = sequelize.define('User', {
     fecha_registro: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-        allowNull: true, // Esto se puede ajustar según tus necesidades
+        allowNull: true,
     },
+    imagen_perfil: { // Nuevo campo
+        type: DataTypes.STRING,
+        allowNull: true,
+    }
 }, {
-    tableName: 'usuarios', // Asegúrate de que esto coincide con el nombre de la tabla en la DB
-    timestamps: false, // Deshabilitar createdAt y updatedAt
+    tableName: 'usuarios',
+    timestamps: false,
 });
 
-module.exports = User; // Exportar el modelo correctamente
+module.exports = User;

@@ -15,7 +15,7 @@ const updateUser = async (id, updatedData) => {
     if (!user) {
         return null; 
     }
-    return await user.update(updatedData);
+    return await user.update(updatedData); 
 };
 
 // Eliminar un usuario por ID
