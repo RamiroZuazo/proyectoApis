@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*-import React, { useState, useEffect } from 'react';
 
 const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
   const [divisionType, setDivisionType] = useState('equal'); 
@@ -48,7 +48,6 @@ const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
       <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">Dividir gastos</h2>
 
-        {/* Botones de selección de tipo de división */}
         <div className="flex gap-3 mb-6">
           <button
             onClick={divideEqually}
@@ -68,7 +67,6 @@ const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
           </button>
         </div>
 
-        {/* Lista de miembros y porcentaje */}
         <div className="space-y-4 mb-6">
           {members.map((member) => (
             <div key={member.name} className="flex justify-between items-center">
@@ -87,7 +85,6 @@ const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
           ))}
         </div>
 
-        {/* Indicador de total */}
         <div className="flex justify-between items-center mb-4">
           <span className="text-gray-700">Total dividido:</span>
           <span className={`font-semibold ${totalPercentage !== 100 ? 'text-red-600' : 'text-green-600'}`}>
@@ -95,12 +92,10 @@ const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
           </span>
         </div>
 
-        {/* Espacio reservado para el mensaje de error */}
         <div className="h-6 mb-4">
           {totalPercentage !== 100 && <p className="text-red-500 text-sm">El total debe sumar 100%</p>}
         </div>
 
-        {/* Botones de acción */}
         <div className="flex justify-end gap-4 ">
           <button
             onClick={handleSave}
@@ -122,3 +117,4 @@ const SplitExpenseModal = ({ showModal, setShowModal, members }) => {
 };
 
 export default SplitExpenseModal;
+*/
