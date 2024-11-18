@@ -1,7 +1,6 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 var bcrypt = require('bcryptjs');
 
-
 // Crear un usuario
 const createUser = async (req, res) => {
     const { nombre, email, contraseña } = req.body; 
@@ -9,7 +8,7 @@ const createUser = async (req, res) => {
         // Imagen por defecto para todos los nuevos usuarios
         const defaultImage = 'http://surl.li/xjopwc';
         
-        var hashedPassword = bcrypt.hashSync(user.password, 8);
+        var hashedPassword = bcrypt.hashSync(contraseña, 8);
 
         // Crear el usuario con la imagen predeterminada
         const newUser = await User.create({ 
@@ -57,9 +56,10 @@ const getUserById = async (req, res) => {
 // controllers/users.js
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { nombre, email, contraseña, imagen_perfil } = req.body; 
+    const { nombre, email, contraseña, imagen_perfil } = req.body;
     try {
-        const [updated] = await User.update({ nombre, email, contraseña, imagen_perfil }, { where: { id } });
+        var hashedPassword = bcrypt.hashSync(contraseña, 8);
+        const [updated] = await User.update({ nombre, email, contraseña:hashedPassword, imagen_perfil }, { where: { id } });
         if (!updated) {
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
