@@ -1,6 +1,6 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 var bcrypt = require('bcryptjs');
-
+const cloudinary = require('cloudinary').v2;
 
 // Crear un usuario
 const createUser = async (req, res) => {
@@ -53,16 +53,42 @@ const getUserById = async (req, res) => {
     }
 };
 
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 // Actualizar un usuario
 // controllers/users.js
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { nombre, email, contraseña, imagen_perfil } = req.body; 
+    const { nombre, email, contraseña } = req.body;
+    let imagen_perfil;
+
     try {
-        const [updated] = await User.update({ nombre, email, contraseña, imagen_perfil }, { where: { id } });
+        // Verifica si hay una imagen en la solicitud
+        if (req.file) {
+            // Sube la imagen a Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'user_profiles', // Carpeta donde guardar las imágenes
+            });
+
+            // Obtiene la URL segura de la imagen subida
+            imagen_perfil = result.secure_url;
+        }
+
+        // Actualiza los datos del usuario en la base de datos
+        const [updated] = await User.update(
+            { nombre, email, contraseña, imagen_perfil },
+            { where: { id } }
+        );
+
         if (!updated) {
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
+
         res.json({ ok: true, message: 'Usuario actualizado correctamente' });
     } catch (err) {
         console.error('Error al actualizar el usuario:', err);
