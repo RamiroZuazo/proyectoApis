@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./db/db'); 
 const userRoutes = require('./routes/users');
 const projectRoutes = require('./routes/projects');
+const ticketRoutes = require('./routes/tickets');
 const app = express();
 const PORT = 8080;
 
@@ -11,6 +12,7 @@ app.use(express.json());
 // Usar las rutas
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 // Sincronizar modelos con la base de datos
 db.sync()

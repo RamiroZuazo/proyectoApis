@@ -22,7 +22,6 @@ const createUser = async (req, res) => {
     }
 };
 
-
 // Obtener todos los usuarios
 const getAllUsers = async (req, res) => {
     try {

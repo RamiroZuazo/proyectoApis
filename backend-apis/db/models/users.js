@@ -26,7 +26,7 @@ const User = sequelize.define('User', {
         defaultValue: DataTypes.NOW,
         allowNull: true,
     },
-    imagen_perfil: { // Nuevo campo
+    imagen_perfil: { 
         type: DataTypes.STRING,
         allowNull: true,
     }
