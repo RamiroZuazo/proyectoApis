@@ -3,8 +3,11 @@ const db = require('./db/db');
 const userRoutes = require('./routes/users');
 const projectRoutes = require('./routes/projects');
 const ticketRoutes = require('./routes/tickets');
+const gastoRoutes = require('./routes/gastos_miembros');
 const app = express();
 const PORT = 8080;
+
+
 
 // Middleware para parsear JSON
 app.use(express.json());
@@ -13,7 +16,7 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tickets', ticketRoutes);
-
+app.use('/api/gastos', gastoRoutes);
 // Sincronizar modelos con la base de datos
 db.sync()
     .then(() => {
