@@ -1,4 +1,6 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
+var bcrypt = require('bcryptjs');
+
 
 // Crear un usuario
 const createUser = async (req, res) => {
@@ -7,11 +9,13 @@ const createUser = async (req, res) => {
         // Imagen por defecto para todos los nuevos usuarios
         const defaultImage = 'http://surl.li/xjopwc';
         
+        var hashedPassword = bcrypt.hashSync(user.password, 8);
+
         // Crear el usuario con la imagen predeterminada
         const newUser = await User.create({ 
             nombre, 
             email, 
-            contraseña, 
+            contraseña: hashedPassword, 
             imagen_perfil: defaultImage 
         });
         
@@ -90,3 +94,5 @@ module.exports = {
     updateUser,
     deleteUser
 };
+
+
