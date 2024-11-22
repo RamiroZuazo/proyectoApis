@@ -1,9 +1,8 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 var bcrypt = require('bcryptjs');
-<<<<<<< HEAD
-=======
+
 const cloudinary = require('cloudinary').v2;
->>>>>>> 019bb376aca42ebc45f6b2bd88db9bcee223f41a
+
 
 // Crear un usuario
 const createUser = async (req, res) => {
@@ -67,37 +66,55 @@ cloudinary.config({
 // controllers/users.js
 const updateUser = async (req, res) => {
     const { id } = req.params;
-<<<<<<< HEAD
-    const { nombre, email, contraseña, imagen_perfil } = req.body;
-    try {
-        var hashedPassword = bcrypt.hashSync(contraseña, 8);
-        const [updated] = await User.update({ nombre, email, contraseña:hashedPassword, imagen_perfil }, { where: { id } });
-=======
     const { nombre, email, contraseña } = req.body;
-    let imagen_perfil;
 
     try {
-        // Verifica si hay una imagen en la solicitud
-        if (req.file) {
-            // Sube la imagen a Cloudinary
-            const result = await cloudinary.uploader.upload(req.file.path, {
-                folder: 'user_profiles', // Carpeta donde guardar las imágenes
-            });
+        console.log('Buscando usuario con ID:', id);
 
-            // Obtiene la URL segura de la imagen subida
-            imagen_perfil = result.secure_url;
-        }
-
-        // Actualiza los datos del usuario en la base de datos
-        const [updated] = await User.update(
-            { nombre, email, contraseña, imagen_perfil },
-            { where: { id } }
-        );
-
->>>>>>> 019bb376aca42ebc45f6b2bd88db9bcee223f41a
-        if (!updated) {
+        // Verifica si el usuario existe
+        const user = await User.findByPk(id);
+        if (!user) {
+            console.log('Usuario no encontrado');
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
+
+        let imagen_perfil;
+
+        // Verifica si hay un archivo adjunto
+        if (req.file) {
+            console.log('Archivo recibido:', req.file);
+
+            const result = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: 'user_profiles' },
+                    (error, result) => {
+                        if (error) {
+                            console.error('Error al subir a Cloudinary:', error);
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+                req.file.stream.pipe(stream);
+            });
+
+            imagen_perfil = result.secure_url;
+            console.log('URL de la imagen subida:', imagen_perfil);
+        }
+
+        // Datos a actualizar
+        const updatedData = {
+            nombre: nombre || user.nombre,
+            email: email || user.email,
+            contraseña: contraseña ? bcrypt.hashSync(contraseña, 8) : user.contraseña,
+            imagen_perfil: imagen_perfil || user.imagen_perfil,
+        };
+
+        console.log('Actualizando datos del usuario:', updatedData);
+
+        // Actualizar usuario
+        await user.update(updatedData);
 
         res.json({ ok: true, message: 'Usuario actualizado correctamente' });
     } catch (err) {
@@ -105,6 +122,7 @@ const updateUser = async (req, res) => {
         res.status(500).json({ ok: false, message: 'Error al actualizar el usuario', error: err.message });
     }
 };
+
 
 
 // Eliminar un usuario

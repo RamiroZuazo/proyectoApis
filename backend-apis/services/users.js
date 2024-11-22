@@ -1,5 +1,11 @@
 const { User } = require("../db/models/users");
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/users');
+const upload = require('../middlewares/upload');
 
+// Ruta para actualizar usuario con imagen
+router.put('/:id', upload.single('imagen_perfil'), userController.updateUser);
 // Obtener todos los usuarios
 const getUsers = async () => await User.findAll();
 
