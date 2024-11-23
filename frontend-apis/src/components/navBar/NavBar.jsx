@@ -4,13 +4,13 @@ import CustomModal from '../profileComponent/CustomModal'; // Asegúrate de impo
 
 const ProfileDropDown = (props) => {
     const [state, setState] = useState(false);
-    const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para mostrar el modal de logout
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const profileRef = useRef();
-    const navigate = useNavigate(); // Para navegar después de cerrar sesión
+    const navigate = useNavigate();
 
     const navigation = [
         { title: "Perfil", path: "/profile" },
-        { title: "Cerrar sesión", action: () => setShowLogoutModal(true) }, // Acción para mostrar el modal
+        { title: "Cerrar sesión", action: () => setShowLogoutModal(true) }, // Mostrar el modal
     ];
 
     useEffect(() => {
@@ -24,11 +24,10 @@ const ProfileDropDown = (props) => {
         };
     }, []);
 
-    // Función para manejar el cierre de sesión
     const handleLogout = () => {
-        // Aquí se ejecutaría la lógica para cerrar sesión
+        sessionStorage.removeItem('access-token'); // Elimina el token
         setShowLogoutModal(false); // Cierra el modal
-        navigate('/LandingPage'); // Redirigir a la LandingPage después de cerrar sesión
+        navigate('/LandingPage'); // Redirige al LandingPage
     };
 
     return (
@@ -55,13 +54,13 @@ const ProfileDropDown = (props) => {
                 {navigation.map((item, idx) => (
                     <li key={idx}>
                         {item.path ? (
-                            <a
+                            <Link
                                 className="block text-gray-600 lg:hover:bg-gray-50 lg:p-2.5"
-                                href={item.path}
+                                to={item.path}
                                 onClick={item.action}
                             >
                                 {item.title}
-                            </a>
+                            </Link>
                         ) : (
                             <button
                                 className="block w-full text-left text-gray-600 lg:hover:bg-gray-50 lg:p-2.5"
@@ -80,11 +79,12 @@ const ProfileDropDown = (props) => {
                 setShowModal={setShowLogoutModal}
                 title="¿Desea cerrar sesión?" // Título del modal
                 primaryButtonText="Cerrar sesión" // Texto del botón rojo
-                onPrimaryAction={handleLogout} // Acción al hacer clic en el botón de "Cerrar sesión"
+                onPrimaryAction={handleLogout} // Acción de cerrar sesión
             />
         </div>
     );
 };
+
 
 export default () => {
     const [menuState, setMenuState] = useState(false);

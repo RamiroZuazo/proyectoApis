@@ -2,29 +2,66 @@ const User = require('../db/models/users'); // Asegúrate de que esta ruta sea c
 var bcrypt = require('bcryptjs');
 
 const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken');
 
+const loginUser = async (req, res) => {
+    const { email, contraseña } = req.body;
+
+    try {
+        // Buscar usuario por email
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
+        }
+
+        // Comparar contraseñas
+        const isPasswordValid = bcrypt.compareSync(contraseña, user.contraseña);
+        if (!isPasswordValid) {
+            return res.status(401).json({ ok: false, message: 'Contraseña incorrecta' });
+        }
+
+        // Generar un token JWT
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({
+            ok: true,
+            token,
+            user: { id: user.id, email: user.email, nombre: user.nombre },
+        });
+    } catch (err) {
+        console.error('Error al iniciar sesión:', err);
+        res.status(500).json({ ok: false, message: 'Error al iniciar sesión', error: err.message });
+    }
+};
 
 // Crear un usuario
 const createUser = async (req, res) => {
     const { nombre, email, contraseña } = req.body; 
     try {
-        // Imagen por defecto para todos los nuevos usuarios
+        // Imagen por defecto
         const defaultImage = 'http://surl.li/xjopwc';
         
-        var hashedPassword = bcrypt.hashSync(contraseña, 8);
+        // Encriptar contraseña
+        const hashedPassword = bcrypt.hashSync(contraseña, 8);
 
-        // Crear el usuario con la imagen predeterminada
+        // Crear el usuario
         const newUser = await User.create({ 
             nombre, 
             email, 
             contraseña: hashedPassword, 
-            imagen_perfil: defaultImage 
+            imagen_perfil: defaultImage,
         });
-        
+
         res.status(201).json({ ok: true, message: 'Usuario creado correctamente', userId: newUser.id });
     } catch (err) {
+        if (err.name === 'SequelizeValidationError') {
+            return res.status(400).json({ ok: false, message: err.errors.map(e => e.message).join(', ') });
+        }
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            return res.status(400).json({ ok: false, message: 'El correo ya está registrado' });
+        }
         console.error('Error al crear el usuario:', err);
-        res.status(500).json({ ok: false, message: 'Error al crear el usuario', error: err.message });
+        res.status(500).json({ ok: false, message: 'Error interno del servidor' });
     }
 };
 
@@ -146,7 +183,8 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser,
 };
 
 
