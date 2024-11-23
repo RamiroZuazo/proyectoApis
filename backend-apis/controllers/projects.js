@@ -29,14 +29,42 @@ const getProjectById = async (req, res) => {
 };
 
 const createProject = async (req, res) => {
+    const { nombre, descripcion } = req.body;
+    const userId = req.userId;  // Asegúrate de que el ID del usuario esté disponible
+
+    console.log("ID del usuario desde el token:", userId); // Verificar que el ID esté correcto
+
     try {
-        const newProject = await projectService.createProject(req.body);
-        res.status(201).json({ ok: true, message: 'Proyecto creado correctamente', projectId: newProject.id });
+        // Crear el nuevo proyecto
+        const newProject = await Proyecto.create({
+            nombre,
+            descripcion,
+        });
+
+        // Asociar este proyecto con el usuario
+        await ProyectoMiembro.create({
+            proyecto_id: newProject.id,
+            usuario_id: userId,
+            rol: 'Creador',
+        });
+
+        console.log('Nuevo proyecto creado:', newProject); // Para verificar el proyecto creado
+
+        res.status(201).json({
+            ok: true,
+            message: 'Proyecto creado correctamente',
+            project: newProject,
+        });
     } catch (err) {
         console.error('Error al crear proyecto:', err);
-        res.status(500).json({ ok: false, message: 'Error al crear proyecto', error: err.message });
+        res.status(500).json({
+            ok: false,
+            message: 'Error al crear proyecto',
+            error: err.message,
+        });
     }
 };
+
 
 const updateProject = async (req, res) => {
     try {
@@ -151,6 +179,27 @@ const removeMemberFromProjectByEmail = async (req, res) => {
         res.status(500).json({ ok: false, message: 'Error al eliminar miembro del proyecto', error: err.message });
     }
 };
+const getProjectsByUserId = async (req, res) => {
+    const { user_id } = req.params; // Obtener el ID del usuario de los parámetros de la URL
+
+    try {
+        // Buscar los proyectos donde el usuario está asignado, usando la relación entre Proyecto y Usuario
+        const proyectos = await Proyecto.findAll({
+
+        });
+
+        // Si no se encuentran proyectos para este usuario
+        if (proyectos.length === 0) {
+            return res.status(404).json({ ok: false, message: 'El usuario no pertenece a ningún proyecto' });
+        }
+
+        // Si se encuentran proyectos, los devolvemos
+        res.json({ ok: true, proyectos });
+    } catch (err) {
+        console.error('Error al obtener proyectos del usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al obtener proyectos del usuario', error: err.message });
+    }
+};
 
 module.exports = {
     getAllProjects,
@@ -160,5 +209,6 @@ module.exports = {
     deleteProject,
     addMemberToProject,
     getMembersByProjectId,
-    removeMemberFromProjectByEmail, 
+    removeMemberFromProjectByEmail,
+    getProjectsByUserId, 
 };

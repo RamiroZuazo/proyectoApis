@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
+import { createProject } from "../../api/api.projects"; // Asegúrate de importar la función para crear el proyecto
 
 const ProyectModal = ({ onCreate }) => {
     const [name, setName] = useState("");
@@ -7,18 +8,32 @@ const ProyectModal = ({ onCreate }) => {
     const [error, setError] = useState(""); // NUEVO ESTADO PARA GESTIONAR EL ERROR
     const [open, setOpen] = useState(false); // CAMBIAMOS EL ESTADO INICIAL A FALSE PARA QUE NO SE ABRA AUTOMÁTICAMENTE
 
-    const handleSubmit = () => {
+    // Función para manejar la creación del proyecto
+    const handleSubmit = async () => {
         if (name && description) {
             const newProject = {
-                id: Date.now(), // Generamos un ID único usando la fecha actual
-                name,
-                description,
+                nombre: name,
+                descripcion: description,
             };
-            onCreate(newProject);
-            setName("");
-            setDescription("");
-            setError(""); // LIMPIAMOS EL ERROR AL CREAR CORRECTAMENTE EL PROYECTO
-            setOpen(false); // CERRAMOS EL MODAL CUANDO LOS DATOS ESTÁN COMPLETOS
+
+            try {
+                // Usamos la API para crear el proyecto y pasamos los datos
+                const response = await createProject(newProject); 
+                
+                if (response.ok) {
+                    // Si la creación es exitosa, limpiamos el formulario y cerramos el modal
+                    setName("");
+                    setDescription("");
+                    setError(""); // LIMPIAMOS EL ERROR AL CREAR CORRECTAMENTE EL PROYECTO
+                    setOpen(false); // CERRAMOS EL MODAL CUANDO LOS DATOS ESTÁN COMPLETOS
+                    onCreate(response.project); // Pasamos el nuevo proyecto al componente principal
+                } else {
+                    setError("Error al crear el proyecto"); // Mostramos mensaje de error si la respuesta no es exitosa
+                }
+            } catch (err) {
+                console.error(err);
+                setError("Error al crear el proyecto"); // Mensaje de error general
+            }
         } else {
             setError("Por favor, ingresa todos los datos para crear un proyecto."); // MOSTRAMOS EL MENSAJE DE ERROR
         }

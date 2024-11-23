@@ -1,6 +1,7 @@
 // db/models/users.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.BIGINT.UNSIGNED,

@@ -18,7 +18,7 @@ export default () => {
             if (response.ok) {
                 // Guardar el token en sessionStorage
                 sessionStorage.setItem('access-token', response.token);
-
+                sessionStorage.setItem('user-id', response.user.id);
                 // Redirigir al usuario después del login
                 navigate('/Menu');
             } else {

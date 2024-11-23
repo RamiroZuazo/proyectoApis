@@ -73,6 +73,18 @@ const removeMemberFromProjectByEmail = async (proyecto_id, email) => {
     return { success: true };
 };
 
+const getProjectsByUserId = async (usuario_id) => {
+    const proyectosMiembro = await ProyectoMiembro.findAll({
+        where: { usuario_id },
+        include: {
+            model: Proyecto,
+            attributes: ['id', 'nombre', 'descripcion'], 
+        },
+    });
+
+    return proyectosMiembro.map((item) => item.Proyecto);
+};
+
 module.exports = {
     getProjects,
     getProjectById,
@@ -81,5 +93,6 @@ module.exports = {
     deleteProject,
     addMemberToProject,
     getMembersByProjectId,
-    removeMemberFromProjectByEmail, 
+    removeMemberFromProjectByEmail,
+    getProjectsByUserId, 
 };
