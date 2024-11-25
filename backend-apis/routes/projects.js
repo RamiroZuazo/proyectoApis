@@ -14,7 +14,7 @@ router.delete('/:id', projectController.deleteProject);
 // Rutas para gestionar miembros en proyectos
 router.post('/add-member', projectController.addMemberToProject);
 router.get('/:proyecto_id/members', projectController.getMembersByProjectId);
-router.delete('/remove-member', projectController.removeMemberFromProjectByEmail); 
+router.delete('/remove-member/:proyecto_id', projectController.removeMemberFromProjectByEmail);
 router.get('/user/:user_id/projects', projectController.getProjectsByUserId);
 
 

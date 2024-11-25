@@ -36,8 +36,7 @@ function App() {
                     }
                 >
                     <Route path="Menu" element={<Menu />} />
-                    <Route path="Menu/Proyect" element={<Proyect />} />
-                    <Route path="Menu/Proyect/:id" element={<Proyect />} /> {/* Ruta dinámica */}
+                    <Route path="/Menu/Proyect/:proyecto_id" element={<Proyect />} />
                     <Route path="profile" element={<UserProfile />} />
                     <Route path="ForgotPasswordProfile" element={<ForgotPassword />} />
                 </Route>

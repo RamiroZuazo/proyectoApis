@@ -45,7 +45,7 @@ const createProject = async (req, res) => {
         await ProyectoMiembro.create({
             proyecto_id: newProject.id,
             usuario_id: userId,
-            rol: 'Creador',
+            rol: 'Admin',
         });
 
         console.log('Nuevo proyecto creado:', newProject); // Para verificar el proyecto creado
@@ -146,39 +146,57 @@ const getMembersByProjectId = async (req, res) => {
 };
 
 const removeMemberFromProjectByEmail = async (req, res) => {
-    const { proyecto_id, email } = req.body;
+    const { proyecto_id } = req.params; // Ahora lo tomamos de los parámetros de la URL
+    const { email } = req.body; // El email sigue viniendo del cuerpo
 
     try {
-        // Buscar el proyecto
+        console.log('Datos recibidos:', { proyecto_id, email });
+
         const proyecto = await Proyecto.findByPk(proyecto_id);
+        console.log('Proyecto encontrado:', proyecto);
+
         if (!proyecto) {
             return res.status(404).json({ ok: false, message: 'Proyecto no encontrado' });
         }
 
-        // Buscar el usuario por su email
         const usuario = await Usuario.findOne({ where: { email } });
+        console.log('Usuario encontrado:', usuario);
+
         if (!usuario) {
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
 
-        // Eliminar la relación en la tabla intermedia
-        const deleted = await ProyectoMiembro.destroy({
+        const relacion = await ProyectoMiembro.findOne({
             where: {
                 proyecto_id,
-                usuario_id: usuario.id
-            }
+                usuario_id: usuario.id,
+            },
         });
+        console.log('Relación encontrada:', relacion);
 
-        if (!deleted) {
+        if (!relacion) {
             return res.status(404).json({ ok: false, message: 'El miembro no está asociado al proyecto' });
         }
+
+        await ProyectoMiembro.destroy({
+            where: {
+                proyecto_id,
+                usuario_id: usuario.id,
+            },
+        });
 
         res.status(200).json({ ok: true, message: 'Miembro eliminado del proyecto' });
     } catch (err) {
         console.error('Error al eliminar miembro del proyecto:', err);
-        res.status(500).json({ ok: false, message: 'Error al eliminar miembro del proyecto', error: err.message });
+        res.status(500).json({
+            ok: false,
+            message: 'Error al eliminar miembro del proyecto',
+            error: err.message,
+        });
     }
 };
+
+
 const getProjectsByUserId = async (req, res) => {
     const { user_id } = req.params; // Obtener el ID del usuario de los parámetros de la URL
 

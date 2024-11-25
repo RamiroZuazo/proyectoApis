@@ -45,9 +45,9 @@ export default () => {
                                     <span className="block text-xl text-gray-700 font-semibold">{item.nombre}</span>
                                     <span className="block text-sm text-gray-500">{item.descripcion}</span>
                                 </div>
-                                <button className="text-gray-700 text-sm border rounded-lg px-3 py-2 duration-150 bg-white hover:bg-gray-100">
-                                    <Link to="Proyect">Manage</Link>
-                                </button>
+                                    <button className="text-gray-700 text-sm border rounded-lg px-3 py-2 duration-150 bg-white hover:bg-gray-100">
+                                        <Link to={`/Menu/Proyect/${item.id}`}>Manage</Link>
+                                    </button>
                             </div>
                         </li>
                     ))
