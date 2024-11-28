@@ -11,7 +11,9 @@ const PORT = 8080;
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 // Middleware para parsear JSON
-app.use(express.json());
+// Aumentar el límite de tamaño de las solicitudes
+app.use(express.json({ limit: '10mb' }));  // Para JSON
+app.use(express.urlencoded({ limit: '10mb', extended: true }));  // Para formularios URL-encoded
 
 // Usar las rutas
 app.use('/api/users', userRoutes);
