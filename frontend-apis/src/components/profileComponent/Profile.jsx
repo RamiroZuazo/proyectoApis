@@ -15,7 +15,7 @@ const Profile = () => {
     contraseña: "",
   });
 
-  const userId = 2; // Suponiendo que estás trabajando con el usuario con ID 2
+  const userId = 4; // Suponiendo que estás trabajando con el usuario con ID 2
   const navigate = useNavigate();
 
   useEffect(() => {
