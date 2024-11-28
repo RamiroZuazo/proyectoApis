@@ -14,23 +14,34 @@ export default () => {
         try {
             // Llamar al backend para iniciar sesión
             const response = await login(email, password);
-
+    
             if (response.ok) {
-                // Guardar el token en sessionStorage
+                // Limpiar el almacenamiento previo por si quedó algo del usuario anterior
+                sessionStorage.clear();
+    
+                // Guardar el token y datos del usuario en sessionStorage
                 sessionStorage.setItem('access-token', response.token);
                 sessionStorage.setItem('user-id', response.user.id);
+    
                 // Redirigir al usuario después del login
                 navigate('/Menu');
             } else {
-                // Manejar errores desde el backend
-                setErrorMessage(response.message || 'Error al iniciar sesión');
+                // Manejar errores específicos basados en el status devuelto por el backend
+                if (response.status === 404) {
+                    setErrorMessage("No existe una cuenta asociada a este correo. Regístrese.");
+                } else if (response.status === 401) {
+                    setErrorMessage("La contraseña ingresada es incorrecta. Inténtalo nuevamente.");
+                } else {
+                    setErrorMessage(response.message || "Ocurrió un error al iniciar sesión.");
+                }
             }
         } catch (error) {
-            // Manejar errores generales
-            console.error('Error al iniciar sesión:', error);
-            setErrorMessage('Error interno del servidor');
+            // Manejar errores del servidor
+            setErrorMessage("Error interno del servidor. Por favor, inténtalo más tarde.");
         }
     };
+    
+    
 
     return (
         <main className="w-full h-screen flex flex-col items-center justify-center px-4">

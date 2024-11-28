@@ -1,14 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomModal from './CustomModal'; // Asegúrate de importar el modal reutilizable
-
+import CustomModal from "./CustomModal";
+import { getLoggedUser, deleteUser } from "../../api/api.users"; // Importa la función para obtener los datos del usuario logueado
+import { jwtDecode } from 'jwt-decode';
 const UserProfile = () => {
-  const [name, setName] = useState("John Lorin");
-  const [email, setEmail] = useState("john@example.com");
-  const [newPhoto, setNewPhoto] = useState("https://randomuser.me/api/portraits/men/46.jpg");
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // Estado para controlar la visibilidad del modal
-
+  const [name, setName] = useState(""); // Inicializamos vacío
+  const [email, setEmail] = useState("");
+  const [newPhoto, setNewPhoto] = useState("https://via.placeholder.com/150"); // Foto de perfil por defecto
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [error, setError] = useState(null); // Para manejar errores
+  const [loading, setLoading] = useState(true); // Estado de carga
   const navigate = useNavigate();
+
+  // Función para cargar los datos del usuario logueado
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      const response = await getLoggedUser(); 
+      const { user } = response; 
+      setName(user.nombre || ""); 
+      setEmail(user.email || ""); 
+      setNewPhoto(user.imagen_perfil || "https://via.placeholder.com/150"); // Foto de perfil
+    } catch (err) {
+      setError(err.message || "Error al cargar los datos del usuario");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cargar los datos del usuario al montar el componente
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   // Función para manejar el cambio de la foto
   const handlePhotoChange = (e) => {
@@ -22,22 +45,22 @@ const UserProfile = () => {
     }
   };
 
-  // Función para actualizar los datos (nombre, correo)
   const handleUpdateProfile = () => {
-    //alert("Perfil actualizado con éxito");
+    alert("Perfil actualizado con éxito");
   };
 
-  // Función para redirigir al componente de restablecer contraseña
   const handlePasswordReset = () => {
-    navigate("/ForgotPasswordProfile", { state: { showSignUpLink: false } }); // Pasamos el estado al componente de restablecer contraseña
+    navigate("/ForgotPasswordProfile", { state: { showSignUpLink: false } });
   };
 
-  // Función para eliminar la cuenta y redirigir a la página de inicio
-  const handleDeleteAccount = () => {
-    // Aquí deberías implementar la lógica para eliminar la cuenta en el backend
-    //alert("Cuenta eliminada exitosamente");
-    navigate("/LandingPage"); // Redirigir a la página de inicio (LandingPage)
-  };
+
+  if (loading) {
+    return <div className="text-center text-gray-600">Cargando datos del usuario...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
 
   return (
     <div className="max-w-lg mx-auto my-5 bg-white p-8 rounded-xl shadow shadow-slate-300">
@@ -101,23 +124,6 @@ const UserProfile = () => {
       >
         Cambiar contraseña
       </button>
-
-      {/* Eliminar cuenta */}
-      <button
-        onClick={() => setShowDeleteModal(true)} // Abre el modal al hacer clic en "Eliminar cuenta"
-        className="w-full py-3 font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg mt-4"
-      >
-        Eliminar cuenta
-      </button>
-
-      {/* Modal de confirmación para eliminar cuenta */}
-      <CustomModal
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        title="¿Desea eliminar su cuenta?"
-        primaryButtonText="Eliminar cuenta"
-        onPrimaryAction={handleDeleteAccount} // Ejecuta la función de eliminar cuenta al confirmar
-      />
     </div>
   );
 };

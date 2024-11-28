@@ -9,7 +9,7 @@ export const getProjectsByUserId = async (userId) => {
         const response = await fetch(`http://localhost:8080/api/projects/user/${userId}/projects`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,  // Pasar el token en la cabecera
+                'Authorization': `Bearer ${token}`,  
             },
         });
 
@@ -27,6 +27,8 @@ export const getProjectsByUserId = async (userId) => {
 // Función para crear un nuevo proyecto y agregar el usuario que lo creó
 export const createProject = async (projectData) => {
     const token = sessionStorage.getItem("access-token");
+    console.log("Token obtenido del sessionStorage:", token);
+
     if (!token) throw new Error("No estás autenticado.");
 
     const response = await fetch("http://localhost:8080/api/projects", {

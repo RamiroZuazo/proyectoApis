@@ -1,10 +1,8 @@
 import SectionHeader from "../sectionHeader/SectionHeader";
 import DebtsTableTab from "../table/DebtsTableTab";
 import TicketModal from "../modal/TicketModal";
-import { useState } from 'react';
-// VistaGeneralTab.js
-const VistaGeneralTab = () => {
-    const [showModal, setShowModal] = useState(false);
+
+const VistaGeneralTab = ({ proyecto_id }) => {
     return (
         <>
             <SectionHeader
@@ -12,9 +10,11 @@ const VistaGeneralTab = () => {
                 description="Carga todos tus tickets de compra y asigna los gastos."
                 showButton={true}
                 buttonText="Agregar nuevo ticket"
-                ModalComponent={TicketModal}  // El modal que quieres usar
+                ModalComponent={(props) => (
+                    <TicketModal {...props} proyecto_id={proyecto_id} />
+                )}
             />
-            <DebtsTableTab />
+            <DebtsTableTab proyecto_id={proyecto_id} /> {/* Aquí pasas el proyecto_id */}
         </>
     );
 };

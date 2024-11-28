@@ -1,3 +1,4 @@
+// tickets.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 const Project = require('./projects');
@@ -48,5 +49,8 @@ Ticket.belongsTo(User, { foreignKey: 'usuario_responsable_id', as: 'usuario_resp
 
 Project.hasMany(Ticket, { foreignKey: 'proyecto_id', as: 'tickets' });
 User.hasMany(Ticket, { foreignKey: 'usuario_responsable_id', as: 'tickets' });
+
+module.exports = Ticket;
+
 
 module.exports = Ticket;

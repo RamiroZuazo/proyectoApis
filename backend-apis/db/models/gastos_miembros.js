@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Ticket = require('./tickets');
 
 const GastoMiembro = sequelize.define('GastoMiembro', {
     id: {
@@ -29,11 +30,15 @@ const GastoMiembro = sequelize.define('GastoMiembro', {
     },
     pagado: {
         type: DataTypes.TINYINT,
-        defaultValue: 0, // 0 significa no pagado, 1 significa pagado
+        defaultValue: 0, 
     },
 }, {
     tableName: 'gastos_miembros',
     timestamps: false,
 });
+
+// En GastoMiembro.js
+GastoMiembro.belongsTo(Ticket, { foreignKey: 'ticket_id', as: 'ticket' });
+
 
 module.exports = GastoMiembro;

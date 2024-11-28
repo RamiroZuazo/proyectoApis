@@ -1,7 +1,8 @@
 import TicketTable from "../table/TicketTable";
 import SectionHeader from "../sectionHeader/SectionHeader";
+
 // HistorialReportesTab.js
-const HistorialReportesTab = () => {
+const HistorialReportesTab = ({ proyecto_id }) => {
     return (
         <>  
             <SectionHeader 
@@ -9,7 +10,7 @@ const HistorialReportesTab = () => {
                 description="Consulta el registro detallado de todos los tickets cargados y los gastos asignados para llevar un control eficiente de tus finanzas."
                 showButton={false}
             />
-            <TicketTable/>
+            <TicketTable proyectoId={proyecto_id} /> {/* Pasar proyecto_id aquí */}
         </>
     );
 };

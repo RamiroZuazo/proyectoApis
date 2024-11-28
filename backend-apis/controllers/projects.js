@@ -198,21 +198,29 @@ const removeMemberFromProjectByEmail = async (req, res) => {
 
 
 const getProjectsByUserId = async (req, res) => {
-    const { user_id } = req.params; // Obtener el ID del usuario de los parámetros de la URL
+    const { user_id } = req.params; // Obtener el ID del usuario desde los parámetros
 
     try {
-        // Buscar los proyectos donde el usuario está asignado, usando la relación entre Proyecto y Usuario
+        // Buscar proyectos asociados al usuario a través de la tabla intermedia ProyectoMiembro
         const proyectos = await Proyecto.findAll({
-
+            include: [
+                {
+                    model: Usuario,
+                    through: {
+                        attributes: [], // No necesitamos datos adicionales de la tabla intermedia
+                    },
+                    where: { id: user_id }, // Filtrar por el ID del usuario
+                },
+            ],
         });
 
-        // Si no se encuentran proyectos para este usuario
+        // Si no hay proyectos asociados, devolver una respuesta vacía (sin error)
         if (proyectos.length === 0) {
-            return res.status(404).json({ ok: false, message: 'El usuario no pertenece a ningún proyecto' });
+            return res.status(200).json({ ok: true, proyectos: [], message: 'No se encontraron proyectos asociados' });
         }
 
-        // Si se encuentran proyectos, los devolvemos
-        res.json({ ok: true, proyectos });
+        // Devolver los proyectos encontrados
+        res.status(200).json({ ok: true, proyectos });
     } catch (err) {
         console.error('Error al obtener proyectos del usuario:', err);
         res.status(500).json({ ok: false, message: 'Error al obtener proyectos del usuario', error: err.message });

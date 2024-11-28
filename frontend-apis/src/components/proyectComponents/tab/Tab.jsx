@@ -1,37 +1,33 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 
-// Import de componentes externos
-import MiembrosTab from '../tabItems/MiembrosTab';
-import VistaGeneralTab from '../tabItems/VistaGeneralTab';
-import HistorialReportesTab from '../tabItems/HistorialReportesTab';
+import MiembrosTab from "../tabItems/MiembrosTab";
+import VistaGeneralTab from "../tabItems/VistaGeneralTab";
+import HistorialReportesTab from "../tabItems/HistorialReportesTab";
 
-export default () => {
+const Tab = ({ proyecto_id }) => {
     const tabItems = [
         {
             icon: <AccountCircleIcon />,
             name: "Miembros",
-            component: <MiembrosTab />,  // Asignar el componente
+            component: (props) => <MiembrosTab {...props} proyecto_id={proyecto_id} />, // Componente como función
         },
         {
             icon: <ViewCompactIcon />,
             name: "Vista general",
-            component: <VistaGeneralTab />,  // Asignar el componente
+            component: (props) => <VistaGeneralTab {...props} proyecto_id={proyecto_id} />,
         },
         {
             icon: <AssessmentIcon />,
             name: "Historial y reportes",
-            component: <HistorialReportesTab />,  // Asignar el componente
+            component: (props) => <HistorialReportesTab {...props} proyecto_id={proyecto_id} />,
         },
     ];
 
     return (
-        <Tabs.Root
-            className="max-w-screen-xl mx-auto px-4 md:px-8"
-            defaultValue="Vista general"
-        >
+        <Tabs.Root className="max-w-screen-xl mx-auto px-4 md:px-8" defaultValue="Vista general">
             <Tabs.List
                 className="w-full border-b flex items-center gap-x-3 overflow-x-auto text-sm"
                 aria-label="Manage your account"
@@ -51,10 +47,13 @@ export default () => {
             </Tabs.List>
 
             {tabItems.map((item, idx) => (
-                <Tabs.Content key={idx} className="py-6" value={item.name}>
-                    {item.component} {/* Mostrar el componente */}
+                <Tabs.Content key={idx} value={item.name}>
+                    {item.component()}
                 </Tabs.Content>
+                        
             ))}
         </Tabs.Root>
     );
 };
+
+export default Tab;

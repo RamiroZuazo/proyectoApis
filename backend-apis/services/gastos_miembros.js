@@ -54,8 +54,50 @@ const marcarGastoComoPagado = async (gastoId) => {
     return gasto;
 };
 
+const crearGasto = async (ticketId, usuarioId, monto) => {
+    try {
+        // Crear el gasto
+        const gasto = await GastoMiembro.create({
+            ticket_id: ticketId,
+            usuario_id: usuarioId,
+            monto: monto,
+            pagado: 0, // Por defecto, no pagado
+        });
+        return gasto;
+    } catch (error) {
+        console.error('Error al crear el gasto en el servicio:', error);
+        throw error; // Lanza el error para que el controlador lo maneje
+    }
+};
+
+const getGastosPendientesPorUsuario = async (usuarioResponsableId, usuarioDeudorId, proyectoId) => {
+    try {
+        const gastos = await GastoMiembro.findAll({
+            where: { usuario_id: usuarioDeudorId, pagado: 0 },
+            include: [{
+                model: Ticket,
+                as: 'ticket',  // Asegúrate de que el alias coincida con el definido en la relación
+                attributes: ['id', 'descripcion', 'monto', 'usuario_responsable_id', 'proyecto_id'],
+                where: {
+                    usuario_responsable_id: usuarioResponsableId,
+                    proyecto_id: proyectoId,
+                },
+            }],
+        });
+
+        return gastos;
+    } catch (error) {
+        console.error('Error al obtener los gastos pendientes:', error);
+        throw error;
+    }
+};
+
+
+
 module.exports = {
     dividirGastos,
     getGastosPorUsuario,
     marcarGastoComoPagado,
+    crearGasto,
+    getGastosPendientesPorUsuario,
 };
