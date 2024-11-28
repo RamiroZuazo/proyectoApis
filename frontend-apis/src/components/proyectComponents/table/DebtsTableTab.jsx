@@ -17,19 +17,26 @@ export default ({ proyecto_id }) => {
     ]);
     const [selectedItem, setSelectedItem] = useState(0);
     const [loggedUserId, setLoggedUserId] = useState(null); // Estado para almacenar el ID del usuario logueado
+    const [loading, setLoading] = useState(true); // Estado de carga
 
     useEffect(() => {
-        const fetchMembers = async () => {
+        const fetchUserAndMembers = async () => {
             try {
                 // Obtener el usuario logueado
                 const user = await getLoggedUser();
-                setLoggedUserId(user.user.id);  // Guardamos el ID del usuario logueado
-                
+                if (user && user.user && user.user.id) {
+                    setLoggedUserId(user.user.id);  // Guardamos el ID del usuario logueado
+                } else {
+                    console.error("No se pudo obtener el usuario logueado.");
+                    setLoading(false);
+                    return;
+                }
+
                 // Obtener los miembros del proyecto
                 const data = await getMembersByProjectId(proyecto_id);
-
                 if (data?.proyecto?.Users) {
                     const allMembers = data.proyecto.Users.map((miembro) => ({
+                        id: miembro.id,  // Añadimos el id del miembro
                         nombre: miembro.nombre,
                         Monto: "$0",  // Se puede ajustar si es necesario
                         Estado: "Sin deuda",  // Se puede ajustar si es necesario
@@ -48,11 +55,17 @@ export default ({ proyecto_id }) => {
                 }
             } catch (err) {
                 console.error("Error al cargar los miembros:", err);
+            } finally {
+                setLoading(false); // Desactivamos el estado de carga
             }
         };
 
-        fetchMembers();
-    }, [proyecto_id, loggedUserId]); // Dependencia de `loggedUserId`
+        fetchUserAndMembers();
+    }, [proyecto_id]); // No depende de loggedUserId
+
+    if (loading) {
+        return <div>Loading...</div>;  // Mostrar un mensaje de carga mientras obtenemos los datos
+    }
 
     return (
         <div className="max-w-screen-xl mx-auto px-4 md:px-8">
