@@ -1,21 +1,21 @@
 const login = async (email, password) => {
-    console.log("Datos enviados al servidor:"); 
     try {
         const response = await fetch("http://localhost:8080/api/users/login", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, contraseña: password }),
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            return { ok: false, status: response.status, message: errorData.message };
         }
 
-        const jsonData = await response.json();
-        return jsonData;
+        const data = await response.json();
+        return { ok: true, ...data };
     } catch (error) {
         console.error("Error al intentar iniciar sesión:", error);
-        return { ok: false, message: 'Error al conectar con el servidor' };
+        return { ok: false, message: "Error al conectar con el servidor" };
     }
 };
 

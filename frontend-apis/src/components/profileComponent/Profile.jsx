@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CustomModal from "./CustomModal"; // Asegúrate de importar el modal reutilizable
@@ -183,23 +184,6 @@ const Profile = () => {
       >
         Cambiar contraseña
       </button>
-
-      {/* Eliminar cuenta */}
-      <button
-        onClick={() => setShowDeleteModal(true)} // Abre el modal al hacer clic en "Eliminar cuenta"
-        className="w-full py-3 font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg mt-4"
-      >
-        Eliminar cuenta
-      </button>
-
-      {/* Modal de confirmación para eliminar cuenta */}
-      <CustomModal
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        title="¿Desea eliminar su cuenta?"
-        primaryButtonText="Eliminar cuenta"
-        onPrimaryAction={handleDeleteAccount} // Ejecuta la función de eliminar cuenta al confirmar
-      />
     </div>
   );
 };

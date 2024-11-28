@@ -1,17 +1,35 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from '../profileComponent/CustomModal'; // Asegúrate de importar el modal personalizado
+import { getLoggedUser, deleteUser } from "../../api/api.users"; // Importa la función para obtener los datos del usuario logueado
 
 const ProfileDropDown = (props) => {
     const [state, setState] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [userData, setUserData] = useState({
+        profilePicture: "https://randomuser.me/api/portraits/men/46.jpg", // Imagen por defecto
+    });
     const profileRef = useRef();
     const navigate = useNavigate();
 
-    const navigation = [
-        { title: "Perfil", path: "/profile" },
-        { title: "Cerrar sesión", action: () => setShowLogoutModal(true) }, // Mostrar el modal
-    ];
+    // Función para obtener los datos reales del usuario logueado
+    const fetchUserData = async () => {
+        try {
+            const response = await getLoggedUser();
+            const { user } = response; // Asegúrate de que `user` es el objeto correcto con las propiedades necesarias
+            setUserData({
+                profilePicture: user.imagen_perfil || "https://randomuser.me/api/portraits/men/46.jpg",
+                name: user.nombre || "Usuario desconocido", // Asegúrate de que el nombre esté definido
+                email: user.email || "Correo no disponible", // Asegúrate de que el correo esté definido
+            });
+        } catch (error) {
+            console.error("Error al obtener los datos del usuario:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         const handleDropDown = (e) => {
@@ -25,10 +43,15 @@ const ProfileDropDown = (props) => {
     }, []);
 
     const handleLogout = () => {
-        sessionStorage.removeItem('access-token'); // Elimina el token
-        setShowLogoutModal(false); // Cierra el modal
-        navigate('/LandingPage'); // Redirige al LandingPage
+        sessionStorage.removeItem('access-token');
+        setShowLogoutModal(false);
+        navigate('/LandingPage');
     };
+
+    const navigation = [
+        { title: "Perfil", path: "/profile" },
+        { title: "Cerrar sesión", action: () => setShowLogoutModal(true) },
+    ];
 
     return (
         <div className={`relative ${props.class}`}>
@@ -39,14 +62,14 @@ const ProfileDropDown = (props) => {
                     onClick={() => setState(!state)}
                 >
                     <img
-                        src="https://randomuser.me/api/portraits/men/46.jpg"
+                        src={userData.profilePicture || "https://randomuser.me/api/portraits/men/46.jpg"} // Imagen real del usuario o por defecto
                         className="w-full h-full rounded-full"
                         alt="User profile"
                     />
                 </button>
                 <div className="lg:hidden">
-                    <span className="block">John Lorin</span>
-                    <span className="block text-sm text-gray-500">john@example.com</span>
+                    <span className="block">{userData.name || "John Lorin"}</span> {/* Nombre real del usuario */}
+                    <span className="block text-sm text-gray-500">{userData.email || "john@example.com"}</span> {/* Email real del usuario */}
                 </div>
             </div>
 

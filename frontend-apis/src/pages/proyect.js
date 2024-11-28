@@ -1,16 +1,17 @@
-import { useEffect } from 'react';
-import '../App.css';
-import Proyect from '../components/proyectComponents/tabItems/MiembrosTab';
-import Tab from '../components/proyectComponents/tab/Tab';
+import { useEffect } from "react";
+import "../App.css";
+import Tab from "../components/proyectComponents/tab/Tab";
+import { useParams } from "react-router-dom"; 
 
 function ProyectMenu() {
+    const { proyecto_id } = useParams(); 
+
     useEffect(() => {
-        document.title = "Proyecto - Ticketify";
-    }, []);
+        document.title = "Proyecto - Ticketify";   }, [proyecto_id]);
 
     return (
-        <>      
-            <Tab/>
+        <>
+            <Tab proyecto_id={proyecto_id} />
         </>
     );
 }

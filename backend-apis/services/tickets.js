@@ -24,24 +24,23 @@ const getTicketById = async (id) => {
 
 // Crear un nuevo ticket
 const createTicket = async (data) => {
-    const { fecha, monto, descripcion, proyecto_id, correo_responsable } = data;
+    const { fecha, monto, descripcion, proyecto_id, usuario_responsable_id } = data;
 
-    // Buscar el usuario por su correo
-    const usuario = await Usuario.findOne({ where: { email: correo_responsable } });
-
-    if (!usuario) {
-        throw new Error('Usuario no encontrado');
+    // Verifica si el ID del usuario es válido (ya no buscamos por correo)
+    if (!usuario_responsable_id) {
+        throw new Error('ID de usuario responsable no proporcionado');
     }
 
-    // Crear el ticket con el ID del usuario
+    // Crear el ticket con el ID del usuario directamente
     return await Ticket.create({
         fecha,
         monto,
         descripcion,
         proyecto_id,
-        usuario_responsable_id: usuario.id,
+        usuario_responsable_id,
     });
 };
+
 
 // Actualizar un ticket
 const updateTicket = async (id, updatedData) => {
