@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates de Correo</title>
+    <title>Confirmación de Creación de Cuenta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,34 +28,21 @@
             padding: 10px;
             font-size: 0.8em;
         }
-        .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
     </style>
 </head>
 <body>
     <!-- Template de Creación de Cuenta -->
     <div class="header">
-        <h1>¡Bienvenido a Nuestra Plataforma!</h1>
+        <h1>¡Bienvenido a Ticketify!</h1>
     </div>
     <div class="content">
         <h2>Confirmación de Creación de Cuenta</h2>
-        <p>Estimado/a [NOMBRE],</p>
-        <p>Tu cuenta ha sido creada exitosamente. Para completar tu registro, por favor haz clic en el siguiente botón:</p>
-        <a href="[LINK_CONFIRMACION]" class="btn">Confirmar Cuenta</a>
-        <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
-        <p>[LINK_CONFIRMACION]</p>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Tu cuenta ha sido creada exitosamente. Ya puedes comenzar a utilizar todos nuestros servicios.</p>
         <p>Si no has solicitado esta cuenta, por favor ignora este correo.</p>
     </div>
     <div class="footer">
-        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+        © 2024 Ticketify. Todos los derechos reservados.
     </div>
-
 </body>
 </html>

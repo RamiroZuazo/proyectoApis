@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates de Correo</title>
+    <title>Recuperación de Contraseña</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,19 +40,20 @@
     </style>
 </head>
 <body>
-   <div class="header">
-        <h1>Recuperación de Contraseña</h1>
+    <div class="header">
+        <h1>Recuperación de Contraseña en Ticketify</h1>
     </div>
     <div class="content">
-        <h2>Restablece tu Contraseña</h2>
-        <p>Estimado/a [NOMBRE],</p>
-        <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no fuiste tú, ignora este correo.</p>
-        <a href="[LINK_RESETEO]" class="btn">Restablecer Contraseña</a>
-        <p>El enlace expirará en [TIEMPO_EXPIRACION].</p>
+        <h2>Solicitud de Cambio de Contraseña</h2>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no realizaste esta solicitud, por favor ignora este mensaje.</p>
+        <p>Para recuperar tu contraseña, por favor haz clic en el siguiente enlace:</p>
+        <a href="{{link_recuperacion}}" class="btn">Recuperar Contraseña</a>
+        <p>Si no puedes hacer clic en el botón, copia y pega este enlace en tu navegador:</p>
+        <p>{{link_recuperacion}}</p>
     </div>
     <div class="footer">
-        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+        © 2024 Ticketify. Todos los derechos reservados.
     </div>
-
 </body>
 </html>

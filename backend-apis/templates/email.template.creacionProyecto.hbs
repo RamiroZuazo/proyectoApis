@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates de Correo</title>
+    <title>Confirmación de Creación de Proyecto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,24 +40,23 @@
     </style>
 </head>
 <body>
- <!-- Template de Creación de Proyecto -->
+    <!-- Template de Creación de Proyecto -->
     <div class="header">
-        <h1>Nuevo Proyecto Creado</h1>
+        <h1>Nuevo Proyecto Creado en Ticketify</h1>
     </div>
     <div class="content">
         <h2>Confirmación de Proyecto</h2>
-        <p>Estimado/a [NOMBRE],</p>
-        <p>Tu proyecto "[NOMBRE_PROYECTO]" ha sido creado exitosamente. Aquí tienes algunos detalles:</p>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Tu proyecto "{{nombre_proyecto}}" ha sido creado exitosamente. Aquí tienes algunos detalles:</p>
         <ul>
-            <li><strong>Nombre del Proyecto:</strong> [NOMBRE_PROYECTO]</li>
-            <li><strong>Fecha de Creación:</strong> [FECHA]</li>
-            <li><strong>Código de Proyecto:</strong> [CODIGO_PROYECTO]</li>
+            <li><strong>Nombre del Proyecto:</strong> {{nombre_proyecto}}</li>
+            <li><strong>Fecha de Creación:</strong> {{fecha_creacion}}</li>
+            <li><strong>Código de Proyecto:</strong> {{codigo_proyecto}}</li>
         </ul>
-        <a href="[LINK_PROYECTO]" class="btn">Ir al Proyecto</a>
         <p>Puedes comenzar a trabajar en tu proyecto inmediatamente.</p>
     </div>
     <div class="footer">
-        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+        © 2024 Ticketify. Todos los derechos reservados.
     </div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates de Correo</title>
+    <title>Confirmación de Asignación a Proyecto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,22 +41,21 @@
 </head>
 <body>
     <div class="header">
-        <h1>Nuevo Proyecto Asignado</h1>
+        <h1>Nuevo Miembro Agregado a Proyecto en Ticketify</h1>
     </div>
     <div class="content">
         <h2>Invitación de Proyecto</h2>
-        <p>Estimado/a [NOMBRE],</p>
-        <p>Has sido agregado al proyecto "[NOMBRE_PROYECTO]".</p>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Has sido agregado al proyecto "{{nombre_proyecto}}".</p>
         <ul>
-            <li><strong>Proyecto:</strong> [NOMBRE_PROYECTO]</li>
-            <li><strong>Rol:</strong> [ROL_ASIGNADO]</li>
-            <li><strong>Fecha de Invitación:</strong> [FECHA]</li>
+            <li><strong>Proyecto:</strong> {{nombre_proyecto}}</li>
+            <li><strong>Rol:</strong> {{rol_asignado}}</li>
+            <li><strong>Fecha de Invitación:</strong> {{fecha_invitation}}</li>
         </ul>
-        <a href="[LINK_PROYECTO]" class="btn">Ir al Proyecto</a>
+        <p>Puedes acceder al proyecto directamente desde tu cuenta.</p>
     </div>
     <div class="footer">
-        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+        © 2024 Ticketify. Todos los derechos reservados.
     </div>
-
 </body>
 </html>

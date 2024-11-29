@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Templates de Correo</title>
+    <title>Confirmación de Nuevo Gasto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,24 +40,23 @@
     </style>
 </head>
 <body>
-   <div class="header">
-        <h1>Nuevo Gasto Registrado</h1>
+    <div class="header">
+        <h1>Nuevo Gasto Registrado en Ticketify</h1>
     </div>
     <div class="content">
         <h2>Detalle de Gasto</h2>
-        <p>Estimado/a [NOMBRE],</p>
-        <p>Se ha registrado un nuevo gasto en el proyecto "[NOMBRE_PROYECTO]":</p>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Se ha registrado un nuevo gasto en el proyecto "{{nombre_proyecto}}":</p>
         <ul>
-            <li><strong>Monto:</strong> $[MONTO]</li>
-            <li><strong>Categoría:</strong> [CATEGORIA_GASTO]</li>
-            <li><strong>Fecha:</strong> [FECHA]</li>
-            <li><strong>Registrado por:</strong> [NOMBRE_USUARIO]</li>
+            <li><strong>Monto:</strong> ${{monto}}</li>
+            <li><strong>Categoría:</strong> {{categoria_gasto}}</li>
+            <li><strong>Fecha:</strong> {{fecha}}</li>
+            <li><strong>Registrado por:</strong> {{nombre_usuario}}</li>
         </ul>
-        <a href="[LINK_PROYECTO]" class="btn">Ver Detalles</a>
+        <p>Puedes ver más detalles en el proyecto directamente.</p>
     </div>
     <div class="footer">
-        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+        © 2024 Ticketify. Todos los derechos reservados.
     </div>
-
 </body>
 </html>
