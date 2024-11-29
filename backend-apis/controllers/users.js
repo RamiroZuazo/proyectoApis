@@ -4,6 +4,8 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken');
 
+
+
 const loginUser = async (req, res) => {
     const { email, contraseña } = req.body;
 
@@ -74,27 +76,6 @@ const getAllUsers = async (req, res) => {
     } catch (err) {
         console.error('Error al obtener usuarios:', err);
         res.status(500).json({ ok: false, message: 'Error al obtener usuarios', error: err.message });
-    }
-};
-
-// Obtener un usuario por ID
-const getUserById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        if (req.userId !== parseInt(id, 10)) {
-            return res.status(403).json({ ok: false, message: 'No autorizado para acceder a este usuario' });
-        }
-        const user = await User.findByPk(id, {
-            attributes: ['id', 'nombre', 'email', 'imagen_perfil'], 
-        });
-        if (!user) {
-            return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
-        }
-
-        res.json({ ok: true, user });
-    } catch (err) {
-        console.error('Error al obtener el usuario:', err);
-        res.status(500).json({ ok: false, message: 'Error al obtener el usuario', error: err.message });
     }
 };
 
@@ -172,6 +153,28 @@ const updateUser = async (req, res) => {
     }
 };
 
+// Obtener un usuario por ID
+const getUserById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (req.userId !== parseInt(id, 10)) {
+            return res.status(403).json({ ok: false, message: 'No autorizado para acceder a este usuario' });
+        }
+        const user = await User.findByPk(id, {
+            attributes: ['id', 'nombre', 'email', 'imagen_perfil'], 
+        });
+        if (!user) {
+            return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, user });
+    } catch (err) {
+        console.error('Error al obtener el usuario:', err);
+        res.status(500).json({ ok: false, message: 'Error al obtener el usuario', error: err.message });
+    }
+};
+
+
 // Eliminar un usuario
 const deleteUser = async (req, res) => {
     const { id } = req.params;
@@ -191,14 +194,11 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
+    loginUser,
     createUser,
     getAllUsers,
     getUserById,
-    updateUser,
+    updateUser, 
     deleteUser,
-    loginUser,
+    getMailById  
 };
-
-
-
-

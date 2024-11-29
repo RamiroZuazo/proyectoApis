@@ -1,27 +1,31 @@
+const fs = require('fs');
+const path = require('path');
+const handlebars = require('handlebars'); // Importar Handlebars
+
 const gastoService = require('../services/gastos_miembros');
 const token_validator = require('../middlewares/token_validator');
 const userService = require('../services/users');
 
 const dividirGastos = async (req, res) => {
-    try {
-        const { ticketId, montoTotal } = req.body;
-        const gastos = await gastoService.dividirGastos(ticketId, montoTotal);
-        res.status(201).json({ ok: true, message: 'Gastos divididos correctamente', gastos });
-    } catch (err) {
-        console.error('Error al dividir gastos:', err);
-        res.status(500).json({ ok: false, message: 'Error al dividir gastos', error: err.message });
-    }
+  try {
+    const { ticketId, montoTotal } = req.body;
+    const gastos = await gastoService.dividirGastos(ticketId, montoTotal);
+    res.status(201).json({ ok: true, message: 'Gastos divididos correctamente', gastos });
+  } catch (err) {
+    console.error('Error al dividir gastos:', err);
+    res.status(500).json({ ok: false, message: 'Error al dividir gastos', error: err.message });
+  }
 };
 
 const getGastosPorUsuario = async (req, res) => {
-    try {
-        const { usuarioId } = req.params;
-        const gastos = await gastoService.getGastosPorUsuario(usuarioId);
-        res.status(200).json({ ok: true, gastos });
-    } catch (err) {
-        console.error('Error al obtener gastos por usuario:', err);
-        res.status(500).json({ ok: false, message: 'Error al obtener gastos por usuario', error: err.message });
-    }
+  try {
+    const { usuarioId } = req.params;
+    const gastos = await gastoService.getGastosPorUsuario(usuarioId);
+    res.status(200).json({ ok: true, gastos });
+  } catch (err) {
+    console.error('Error al obtener gastos por usuario:', err);
+    res.status(500).json({ ok: false, message: 'Error al obtener gastos por usuario', error: err.message });
+  }
 };
 
 const marcarGastosComoPagado = async (req, res) => {
@@ -43,16 +47,16 @@ const marcarGastosComoPagado = async (req, res) => {
     }
 };
 const crearGasto = async (req, res) => {
-    try {
-        const { ticketId, usuarioId, monto } = req.body;
+  try {
+    const { ticketId, usuarioId, monto } = req.body;
 
-        // Validar datos de entrada
-        if (!ticketId || !usuarioId || !monto) {
-            return res.status(400).json({
-                ok: false,
-                message: 'Todos los campos (ticketId, usuarioId, monto) son requeridos.',
-            });
-        }
+    // Validar datos de entrada
+    if (!ticketId || !usuarioId || !monto) {
+      return res.status(400).json({
+        ok: false,
+        message: 'Todos los campos (ticketId, usuarioId, monto) son requeridos.',
+      });
+    }
 
         // Llamar al servicio para crear el gasto
         const gasto = await gastoService.crearGasto(ticketId, usuarioId, monto);
