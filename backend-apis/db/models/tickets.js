@@ -1,4 +1,3 @@
-// tickets.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 const Project = require('./projects');
@@ -38,6 +37,10 @@ const Ticket = sequelize.define('Ticket', {
             key: 'id',
         },
     },
+    imagen_ticket: {
+        type: DataTypes.STRING(255),  // Cambiado a STRING(255) para el campo VARCHAR(255)
+        allowNull: true,  // Puedes cambiar esto a false si es obligatorio
+    },
 }, {
     tableName: 'tickets',
     timestamps: false,
@@ -49,8 +52,5 @@ Ticket.belongsTo(User, { foreignKey: 'usuario_responsable_id', as: 'usuario_resp
 
 Project.hasMany(Ticket, { foreignKey: 'proyecto_id', as: 'tickets' });
 User.hasMany(Ticket, { foreignKey: 'usuario_responsable_id', as: 'tickets' });
-
-module.exports = Ticket;
-
 
 module.exports = Ticket;

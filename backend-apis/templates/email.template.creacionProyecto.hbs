@@ -1,0 +1,63 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates de Correo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+ <!-- Template de Creación de Proyecto -->
+    <div class="header">
+        <h1>Nuevo Proyecto Creado</h1>
+    </div>
+    <div class="content">
+        <h2>Confirmación de Proyecto</h2>
+        <p>Estimado/a [NOMBRE],</p>
+        <p>Tu proyecto "[NOMBRE_PROYECTO]" ha sido creado exitosamente. Aquí tienes algunos detalles:</p>
+        <ul>
+            <li><strong>Nombre del Proyecto:</strong> [NOMBRE_PROYECTO]</li>
+            <li><strong>Fecha de Creación:</strong> [FECHA]</li>
+            <li><strong>Código de Proyecto:</strong> [CODIGO_PROYECTO]</li>
+        </ul>
+        <a href="[LINK_PROYECTO]" class="btn">Ir al Proyecto</a>
+        <p>Puedes comenzar a trabajar en tu proyecto inmediatamente.</p>
+    </div>
+    <div class="footer">
+        © 2024 Nuestra Plataforma. Todos los derechos reservados.
+    </div>
+</body>
+</html>

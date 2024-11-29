@@ -2,12 +2,31 @@ const ticketService = require('../services/tickets.js');
 
 const createTicket = async (req, res) => {
     try {
-        const ticket = await ticketService.createTicket(req.body);
-        res.status(201).json(ticket);
+        // Si la imagen está en base64, la subes a Cloudinary
+        let imagen_ticket = "";
+        if (req.body.imagen_ticket) {
+            // Subir la imagen a Cloudinary
+            const cloudinaryResponse = await cloudinary.uploader.upload(req.body.imagen_ticket, {
+                folder: 'tickets', // O cualquier otra carpeta que quieras en Cloudinary
+            });
+            imagen_ticket = cloudinaryResponse.secure_url; // Aquí guardas la URL de la imagen
+        }
+
+        // Crear el ticket con la URL de la imagen
+        const ticketData = {
+            ...req.body, // Copia todos los campos del ticket
+            imagen_ticket, // Agrega el campo imagen_ticket con la URL de Cloudinary
+        };
+
+        const ticket = await ticketService.createTicket(ticketData); // Usa ticketService para guardar en la base de datos
+
+        res.status(201).json(ticket); // Retorna el ticket creado
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error al crear el ticket:", error);
+        res.status(500).json({ message: error.message }); // En caso de error, retornamos un mensaje de error
     }
 };
+
 
 const getTickets = async (req, res) => {
     try {
