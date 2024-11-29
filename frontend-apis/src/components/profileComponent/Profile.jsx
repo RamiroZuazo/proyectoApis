@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomModal from "./CustomModal";
-import { getLoggedUser, deleteUser } from "../../api/api.users"; // Importa la función para obtener los datos del usuario logueado
+import { getLoggedUser, updateUser } from "../../api/api.users"; // Asegúrate de que updateUser esté importada correctamente
 import { jwtDecode } from 'jwt-decode';
+
 const UserProfile = () => {
   const [name, setName] = useState(""); // Inicializamos vacío
   const [email, setEmail] = useState("");
@@ -45,14 +45,34 @@ const UserProfile = () => {
     }
   };
 
-  const handleUpdateProfile = () => {
-    alert("Perfil actualizado con éxito");
+  // Función para actualizar el perfil
+  const handleUpdateProfile = async () => {
+    try {
+      const updatedData = {
+        nombre: name,
+        email: email,
+        imagen_perfil: newPhoto, // Enviar la nueva imagen si fue cambiada
+      };
+  
+      // Realizamos la actualización del perfil
+      const result = await updateUser(updatedData);
+  
+      console.log(result); // Ver la respuesta completa para debug
+  
+      if (result.ok) {
+        window.location.reload(); // Recarga toda la página
+      } else {
+      }
+    } catch (err) {
+      console.error('Error al actualizar perfil:', err);  // Ver el error completo
+    }
   };
+  
+  
 
   const handlePasswordReset = () => {
     navigate("/ForgotPasswordProfile", { state: { showSignUpLink: false } });
   };
-
 
   if (loading) {
     return <div className="text-center text-gray-600">Cargando datos del usuario...</div>;
