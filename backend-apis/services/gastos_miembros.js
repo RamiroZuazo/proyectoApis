@@ -43,16 +43,48 @@ const getGastosPorUsuario = async (usuarioId) => {
     });
 };
 
-// Actualizar el estado de "pagado" de un gasto
-const marcarGastoComoPagado = async (gastoId) => {
-    const gasto = await GastoMiembro.findByPk(gastoId);
-    if (!gasto) throw new Error('Gasto no encontrado');
 
-    gasto.pagado = 1; // Marcar como pagado
-    await gasto.save();
+const marcarGastosComoPagadoPorUsuarioYProyecto = async (proyecto_id, usuario_id, usuario_responsable_id) => {
+    // Obtener todos los tickets asociados a este proyecto y responsables
+    const tickets = await Ticket.findAll({
+        where: {
+            proyecto_id,
+            usuario_responsable_id,  // Filtrar por el responsable del ticket
+        },
+    });
 
-    return gasto;
+    if (!tickets.length) {
+        throw new Error('No se encontraron tickets para este proyecto y responsable');
+    }
+
+    const ticketIds = tickets.map(ticket => ticket.id);  // Extraer los IDs de los tickets encontrados
+
+    // Buscar los gastos asociados al usuario y a los tickets del proyecto
+    const gastos = await GastoMiembro.findAll({
+        where: {
+            usuario_id,   // El usuario que tiene el gasto
+            ticket_id: ticketIds,  // Filtrar por los tickets obtenidos
+            pagado: 0,     // Solo los gastos no pagados
+        },
+    });
+
+    if (!gastos.length) {
+        throw new Error('No se encontraron gastos pendientes para este usuario en este proyecto');
+    }
+
+    // Marcar como pagados todos los gastos encontrados
+    await Promise.all(
+        gastos.map(async (gasto) => {
+            gasto.pagado = 1;
+            await gasto.save();
+        })
+    );
+
+    return gastos; // Devolver los gastos actualizados
 };
+
+
+
 
 const crearGasto = async (ticketId, usuarioId, monto) => {
     try {
@@ -97,7 +129,7 @@ const getGastosPendientesPorUsuario = async (usuarioResponsableId, usuarioDeudor
 module.exports = {
     dividirGastos,
     getGastosPorUsuario,
-    marcarGastoComoPagado,
+    marcarGastosComoPagadoPorUsuarioYProyecto,
     crearGasto,
     getGastosPendientesPorUsuario,
 };
