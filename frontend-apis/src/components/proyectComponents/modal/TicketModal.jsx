@@ -17,14 +17,14 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
     const [loading, setLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [ticketData, setTicketData] = useState({
-        fecha: "",
+        fecha: dayjs().format('DD/MM/YYYY'),
         monto: "",
         descripcion: "",
         proyecto_id: proyecto_id,
         usuario_responsable_id: null,
         imagen_ticket: null,
     });
-
+    const [errors, setErrors] = useState({ monto: "", descripcion: "" }); 
     useEffect(() => {
         const initializeUser = async () => {
             try {
@@ -103,6 +103,16 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
     const handleSubmit = async (e) => {
         e.preventDefault(); // Evita el comportamiento predeterminado de recargar la página
         
+        const newErrors = {
+            monto: ticketData.monto === "" ? "El monto es obligatorio." : "",
+            descripcion: ticketData.descripcion === "" ? "La descripción es obligatoria." : "",
+        };
+        setErrors(newErrors);
+
+        if (newErrors.monto || newErrors.descripcion) {
+            return; // Detiene el submit si hay errores
+        }
+
         setLoading(true);
         
         // Convertir la fecha al formato correcto (YYYY-MM-DD) usando dayjs
@@ -227,12 +237,15 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
                                     onChange={handleChange}
                                     required
                                 />
+                                {errors.monto && <p className="text-red-500 text-sm">{errors.monto}</p>}  {/* Mensaje de error */}
                                 <DescriptionInput
                                     name="descripcion"
                                     value={ticketData.descripcion}
                                     onChange={handleChange}
                                     required
                                 />
+                                 {errors.descripcion && <p className="text-red-500 text-sm">{errors.descripcion}</p>}  {/* Mensaje de error */}
+
                                 <FileUpload onFileSelect={handleFileSelect} />
                             </div>
                             <div>

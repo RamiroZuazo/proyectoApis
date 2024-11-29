@@ -1,6 +1,6 @@
 const verifyToken = require('../middlewares/token_validator');
 const express = require('express');
-const { getAllUsers, createUser, getUserById, updateUser, deleteUser, loginUser } = require('../controllers/users');
+const { getAllUsers, createUser, getUserById, updateUser, deleteUser, loginUser,getUserMailById} = require('../controllers/users');
 const router = express.Router();
 
 router.get('/', getAllUsers);

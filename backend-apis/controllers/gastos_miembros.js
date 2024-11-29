@@ -1,5 +1,7 @@
 const gastoService = require('../services/gastos_miembros');
 const token_validator = require('../middlewares/token_validator');
+const userService = require('../services/users');
+
 const dividirGastos = async (req, res) => {
     try {
         const { ticketId, montoTotal } = req.body;
@@ -40,7 +42,6 @@ const marcarGastosComoPagado = async (req, res) => {
         res.status(400).json({ ok: false, message: error.message });
     }
 };
-
 const crearGasto = async (req, res) => {
     try {
         const { ticketId, usuarioId, monto } = req.body;
@@ -55,7 +56,8 @@ const crearGasto = async (req, res) => {
 
         // Llamar al servicio para crear el gasto
         const gasto = await gastoService.crearGasto(ticketId, usuarioId, monto);
-        
+
+        // Responder al cliente con el gasto creado
         res.status(201).json({
             ok: true,
             message: 'Gasto creado exitosamente',
@@ -70,6 +72,8 @@ const crearGasto = async (req, res) => {
         });
     }
 };
+
+
 const getGastosPendientesPorUsuario = async (req, res) => {
     try {
         const { usuarioResponsableId, usuarioDeudorId, proyectoId } = req.params;
@@ -77,9 +81,9 @@ const getGastosPendientesPorUsuario = async (req, res) => {
         // Llamar al servicio para obtener los gastos pendientes
         const gastos = await gastoService.getGastosPendientesPorUsuario(usuarioResponsableId, usuarioDeudorId, proyectoId);
 
-        // Verificamos si hay gastos
+        // Verificamos si hay gastos pendientes
         if (!gastos.length) {
-            return res.status(404).json({ ok: false, message: 'No hay gastos pendientes para este usuario.' });
+            return res.status(200).json({ ok: true, message: 'No hay gastos pendientes para este usuario.' });
         }
 
         res.status(200).json({
@@ -96,6 +100,7 @@ const getGastosPendientesPorUsuario = async (req, res) => {
         });
     }
 };
+
 
 
 module.exports = {

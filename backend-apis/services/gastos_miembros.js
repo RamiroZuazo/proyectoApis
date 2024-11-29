@@ -83,9 +83,6 @@ const marcarGastosComoPagadoPorUsuarioYProyecto = async (proyecto_id, usuario_id
     return gastos; // Devolver los gastos actualizados
 };
 
-
-
-
 const crearGasto = async (ticketId, usuarioId, monto) => {
     try {
         // Crear el gasto

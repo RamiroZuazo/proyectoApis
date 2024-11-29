@@ -5,7 +5,7 @@ import SignUp from './pages/signUp.js';
 import SignIn from './pages/signIn.js';
 import Menu from './pages/menu.js';
 import Layout from './components/layout/layout.jsx';
-import Proyect from './pages/proyect.js';
+import Proyect from './pages/project.js';
 import ForgotPassword from './pages/forgotPassword.js';
 import UserProfile from './pages/profile';
 
@@ -36,7 +36,7 @@ function App() {
                     }
                 >
                     <Route path="Menu" element={<Menu />} />
-                    <Route path="/Menu/Proyect/:proyecto_id" element={<Proyect />} />
+                    <Route path="/Menu/project/:proyecto_id" element={<Proyect />} />
                     <Route path="profile" element={<UserProfile />} />
                     <Route path="ForgotPasswordProfile" element={<ForgotPassword />} />
                 </Route>

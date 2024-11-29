@@ -2,14 +2,14 @@ export default () => {
 
     const team = [
         {
-            avatar: "https://media.licdn.com/dms/image/v2/C4E03AQGtQ8Ks1DHkew/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1645134756047?e=1730937600&v=beta&t=EHVj2BUwLfl6msNTFt9y6bH0nIHi0RlJNjF33B61f7I",
+            avatar: "https://media.licdn.com/dms/image/v2/C4E03AQGtQ8Ks1DHkew/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1645134756047?e=1738195200&v=beta&t=Ei4FjTRWDwC7edEitLOu3wMn9-7zKbVX_BW6UCLTkak",
             name: "Gonzalo Perez Grunau",
             title: "Analista de datos",
             linkedin: "https://www.linkedin.com/in/gonzalo-daniel-perez-grunau-460333232/",
             twitter: "javascript:void(0)",
         },
         {
-            avatar: "https://media.licdn.com/dms/image/v2/D4D03AQE4kbwDh0y8Ew/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1678482486265?e=1730937600&v=beta&t=2s6bjZQQVa2pNEMDQyEpfanliGfVRamtkYhNlsZZ2Fs",
+            avatar: "https://media.licdn.com/dms/image/v2/D4D03AQE4kbwDh0y8Ew/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1678482486265?e=1738195200&v=beta&t=miCqewajTYQGPBaBHc7u6-7b4q9oxOVUq4UJPxPGj2g",
             name: "Ramiro Zuazo",
             title: "Pasante IT",
             linkedin: "https://www.linkedin.com/in/ramiro-zuazo-413a41234/",

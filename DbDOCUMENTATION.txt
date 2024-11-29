@@ -1,0 +1,190 @@
+
+
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=proyecto_apis
+
+TABLAS
+
+--TABLA USUARIOS--
+
+CREATE TABLE `usuarios` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `contraseña` varchar(100) NOT NULL,
+  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `imagen_perfil` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `email` (`email`)
+)
++----------------+-----------------+------+-----+-------------------+-------------------+
+| Field          | Type            | Null | Key | Default           | Extra             |
++----------------+-----------------+------+-----+-------------------+-------------------+
+| id             | bigint unsigned | NO   | PRI | NULL              | auto_increment    |
+| nombre         | varchar(100)    | NO   |     | NULL              |                   |
+| email          | varchar(100)    | NO   | UNI | NULL              |                   |
+| contraseña     | varchar(100)    | NO   |     | NULL              |                   |
+| fecha_registro | timestamp       | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+| imagen_perfil  | varchar(255)    | YES  |     | NULL              |                   |
++----------------+-----------------+------+-----+-------------------+-------------------+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--TABLA PROYECTOS--
+
+CREATE TABLE `proyectos` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text,
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+)
+
++----------------+-----------------+------+-----+-------------------+-------------------+
+| Field          | Type            | Null | Key | Default           | Extra             |
++----------------+-----------------+------+-----+-------------------+-------------------+
+| id             | bigint unsigned | NO   | PRI | NULL              | auto_increment    |
+| nombre         | varchar(100)    | NO   |     | NULL              |                   |
+| descripcion    | text            | YES  |     | NULL              |                   |
+| fecha_creacion | timestamp       | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++----------------+-----------------+------+-----+-------------------+-------------------+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--TABLA TTCKETS--
+
+CREATE TABLE `tickets` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `fecha` date NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `descripcion` text,
+  `proyecto_id` bigint unsigned NOT NULL,
+  `usuario_responsable_id` bigint unsigned NOT NULL,
+  `imagen_ticket` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `proyecto_id` (`proyecto_id`),
+  KEY `usuario_responsable_id` (`usuario_responsable_id`),
+  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `tickets_ibfk_3` FOREIGN KEY (`usuario_responsable_id`) REFERENCES `usuarios` (`id`)
+)
+
++------------------------+-----------------+------+-----+---------+----------------+
+| Field                  | Type            | Null | Key | Default | Extra          |
++------------------------+-----------------+------+-----+---------+----------------+
+| id                     | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| fecha                  | date            | NO   |     | NULL    |                |
+| monto                  | decimal(10,2)   | NO   |     | NULL    |                |
+| descripcion            | text            | YES  |     | NULL    |                |
+| proyecto_id            | bigint unsigned | NO   | MUL | NULL    |                |
+| usuario_responsable_id | bigint unsigned | NO   | MUL | NULL    |                |
+| imagen_ticket          | varchar(255)    | YES  |     | NULL    |                |
++------------------------+-----------------+------+-----+---------+----------------+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--TABLA proyectos_miembros--
+
+CREATE TABLE `proyectos_miembros` (
+  `proyecto_id` bigint unsigned NOT NULL,
+  `usuario_id` bigint unsigned NOT NULL,
+  `rol` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`proyecto_id`,`usuario_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `proyectos_miembros_ibfk_1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyectos` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `proyectos_miembros_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+)
+
++-------------+-----------------+------+-----+---------+-------+
+| Field       | Type            | Null | Key | Default | Extra |
++-------------+-----------------+------+-----+---------+-------+
+| proyecto_id | bigint unsigned | NO   | PRI | NULL    |       |
+| usuario_id  | bigint unsigned | NO   | PRI | NULL    |       |
+| rol         | varchar(50)     | YES  |     | NULL    |       |
++-------------+-----------------+------+-----+---------+-------+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--TABLA GASTOS_MIEMBROS--
+
+
+ CREATE TABLE `gastos_miembros` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `ticket_id` bigint unsigned NOT NULL,
+  `usuario_id` bigint unsigned NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `pagado` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `ticket_id` (`ticket_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `gastos_miembros_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`),
+  CONSTRAINT `gastos_miembros_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`)
+)
+
++------------+-----------------+------+-----+---------+----------------+
+| Field      | Type            | Null | Key | Default | Extra          |
++------------+-----------------+------+-----+---------+----------------+
+| id         | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| ticket_id  | bigint unsigned | NO   | MUL | NULL    |                |
+| usuario_id | bigint unsigned | NO   | MUL | NULL    |                |
+| monto      | decimal(10,2)   | NO   |     | NULL    |                |
+| pagado     | tinyint(1)      | YES  |     | 0       |                |
++------------+-----------------+------+-----+---------+----------------+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

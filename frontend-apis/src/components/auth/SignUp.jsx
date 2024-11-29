@@ -56,18 +56,8 @@ export default () => {
         }
     };
 
-    const handleGoogleLoginSuccess = (response) => {
-        console.log('Google Login Success:', response);
-        navigate('/Menu');
-    };
-
-    const handleGoogleLoginFailure = (error) => {
-        console.error('Google Login Failed:', error);
-        setErrorMessage('Error al iniciar sesión con Google');
-    };
 
     return (
-        <GoogleOAuthProvider clientId="TU_CLIENT_ID_DE_GOOGLE">
             <main className="w-full flex">
                 <div className="relative flex-1 hidden items-center justify-center h-screen bg-gray-900 lg:flex">
                     <div className="relative z-10 w-full max-w-md">
@@ -101,18 +91,11 @@ export default () => {
                             <Link to="/LandingPage"><img src="/images/logoTinclinadaBlack.png" width={150} className="lg:hidden" /></Link>
                             <div className="mt-5 space-y-2">
                                 <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">Registrate</h3>
-                                <p>¿Ya tienes una cuenta? <Link to="/SignIn" className="font-medium text-indigo-600 hover:text-indigo-500">Inicia sesión</Link></p>
                             </div>
                         </div>
 
-                        <GoogleLogin
-                            onSuccess={handleGoogleLoginSuccess}
-                            onError={handleGoogleLoginFailure}
-                        />
-
                         <div className="relative">
                             <span className="block w-full h-px bg-gray-300"></span>
-                            <p className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto">O continuar con</p>
                         </div>
 
                         <form
@@ -120,7 +103,7 @@ export default () => {
                             className="space-y-5"
                         >
                             <div>
-                                <label className="font-medium">Nombre</label>
+                                <label className="font-medium">Nombre y apellido</label>
                                 <input
                                     type="text"
                                     required
@@ -160,10 +143,10 @@ export default () => {
                             >
                                 Crear una cuenta
                             </button>
+                            <p>¿Ya tienes una cuenta? <Link to="/SignIn" className="font-medium text-indigo-600 hover:text-indigo-500">Inicia sesión</Link></p>
                         </form>
                     </div>
                 </div>
             </main>
-        </GoogleOAuthProvider>
     );
 };

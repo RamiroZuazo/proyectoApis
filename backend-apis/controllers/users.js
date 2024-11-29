@@ -40,7 +40,7 @@ const createUser = async (req, res) => {
     const { nombre, email, contraseña } = req.body; 
     try {
         // Imagen por defecto
-        const defaultImage = 'http://surl.li/xjopwc';
+        const defaultImage = 'http://surl.li/nqrnkp';
         
         // Encriptar contraseña
         const hashedPassword = bcrypt.hashSync(contraseña, 8);
@@ -189,8 +189,6 @@ const deleteUser = async (req, res) => {
         res.status(500).json({ ok: false, message: 'Error al eliminar el usuario', error: err.message });
     }
 };
-
-
 
 module.exports = {
     createUser,
