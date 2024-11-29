@@ -1,49 +1,48 @@
 import React, { useState, useEffect } from "react";
-import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import CustomModal from "./CustomModal"; // Asegúrate de importar el modal reutilizable
+import { fetchUserData, updateUserProfile } from "../../api/api.users"; // Importa las funciones
 
-const Profile = () => {
+const Profile = async () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newPhoto, setNewPhoto] = useState(""); // Para almacenar la nueva foto (en Base64)
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // Estado para controlar la visibilidad del modal
   const [updatedUserData, setUpdatedUserData] = useState({
     nombre: "",
     email: "",
     contraseña: "",
   });
 
-  const userId = 4; // Suponiendo que estás trabajando con el usuario con ID 2
+  const userId = 2; // Suponiendo que estás trabajando con el usuario con ID 4
   const navigate = useNavigate();
 
+
+  // Obtener los datos del usuario al montar el componente
   useEffect(() => {
     document.title = "Perfil - Ticketify";
 
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
-        if (response.data.ok) {
-          setUserData(response.data.user);
+        const response = await fetchUserData(userId);
+        if (response.ok) {
+          setUserData(response.user);
           setUpdatedUserData({
-            nombre: response.data.user.nombre,
-            email: response.data.user.email,
+            nombre: response.user.nombre,
+            email: response.user.email,
             contraseña: "", // Para no pre-poblar la contraseña
           });
         } else {
-          setError("No se pudo obtener los datos del usuario.");
+          setError("No se pudo obtener los datos del usuario33333.");
         }
       } catch (err) {
         console.error("Error al obtener los datos del usuario:", err);
-        setError("Error al obtener los datos del usuario.");
+        setError("Error al obtener los datos del usuario22222.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, [userId]);
 
   // Función para manejar el cambio de foto
@@ -63,32 +62,16 @@ const Profile = () => {
     setUpdatedUserData({ ...updatedUserData, [name]: value });
   };
 
+  // Función para actualizar el perfil del usuario
   const handleUpdateProfile = async () => {
-    const formData = new FormData();
-    formData.append("nombre", updatedUserData.nombre);
-    formData.append("email", updatedUserData.email);
-    formData.append("contraseña", updatedUserData.contraseña);
-  
-    if (newPhoto) {
-      formData.append("imagen_perfil", newPhoto); // La imagen en Base64
-    }
-  
     try {
-      const response = await axios.put(
-        `http://localhost:8080/api/users/${userId}`,  // Verifica que la ruta sea la correcta
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",  // Usa "application/json" si ya no usas FormData
-          },
-        }
-      );
-  
-      if (response.data.ok) {
+      const response = await updateUserProfile(userId, updatedUserData, newPhoto);
+
+      if (response.ok) {
         alert("Perfil actualizado con éxito");
-        setUserData(response.data.user);  // Actualiza los datos con la URL de Cloudinary
+        setUserData(response.user); // Actualiza los datos con la URL de Cloudinary
       } else {
-        alert(`Hubo un problema al actualizar el perfil: ${response.data.message || 'Error desconocido'}`);
+        alert(`Hubo un problema al actualizar el perfil: ${response.message || 'Error desconocido'}`);
       }
     } catch (error) {
       console.error("Error al actualizar el perfil", error);
@@ -99,7 +82,6 @@ const Profile = () => {
       }
     }
   };
-  
 
   const handlePasswordReset = () => {
     navigate("/ForgotPasswordProfile", { state: { showSignUpLink: false } }); // Redirigir para cambiar contraseña
@@ -189,3 +171,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
