@@ -9,7 +9,8 @@ router.post('/dividir', gastoController.dividirGastos);
 router.get('/usuario/:usuarioId', gastoController.getGastosPorUsuario);
 
 // Marcar gasto como pagado
-router.put('/:gastoId/pagar', gastoController.marcarGastoComoPagado);
+router.put('/:proyecto_id/usuario/:usuario_id/responsable/:usuario_responsable_id/pagar', gastoController.marcarGastosComoPagado);
+
 // Crear un nuevo gasto
 router.post('/crear', token_validator, gastoController.crearGasto);
 router.get('/gastos-pendientes/:usuarioResponsableId/:usuarioDeudorId/:proyectoId', gastoController.getGastosPendientesPorUsuario);

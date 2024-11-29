@@ -22,14 +22,22 @@ const getGastosPorUsuario = async (req, res) => {
     }
 };
 
-const marcarGastoComoPagado = async (req, res) => {
+const marcarGastosComoPagado = async (req, res) => {
+    const { proyecto_id, usuario_id, usuario_responsable_id } = req.params; // Obtener los parámetros desde la URL
+
     try {
-        const { gastoId } = req.params;
-        const gasto = await gastoService.marcarGastoComoPagado(gastoId);
-        res.status(200).json({ ok: true, message: 'Gasto marcado como pagado', gasto });
-    } catch (err) {
-        console.error('Error al marcar gasto como pagado:', err);
-        res.status(500).json({ ok: false, message: 'Error al marcar gasto como pagado', error: err.message });
+        // Llamar al servicio para marcar todos los gastos de ese usuario en el proyecto como pagados
+        const gastos = await gastoService.marcarGastosComoPagadoPorUsuarioYProyecto(proyecto_id, usuario_id, usuario_responsable_id);
+        
+        // Devolver los gastos actualizados
+        res.status(200).json({
+            ok: true,
+            message: 'Gastos marcados como pagados',
+            gastos,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ ok: false, message: error.message });
     }
 };
 
@@ -93,7 +101,7 @@ const getGastosPendientesPorUsuario = async (req, res) => {
 module.exports = {
     dividirGastos,
     getGastosPorUsuario,
-    marcarGastoComoPagado,
+    marcarGastosComoPagado,
     crearGasto,
     getGastosPendientesPorUsuario,
 };
