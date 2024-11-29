@@ -1,6 +1,6 @@
 const User = require('../db/models/users'); // Asegúrate de que esta ruta sea correcta
 var bcrypt = require('bcryptjs');
-
+const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken');
 
@@ -98,51 +98,48 @@ const getUserById = async (req, res) => {
     }
 };
 
+// Configuración de multer para manejar archivos
+const storage = multer.memoryStorage();  // Almacenar los archivos en la memoria temporalmente
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,  // Limitar a 5MB
+  }
+}).single('imagen_perfil');  // 'imagen_perfil' es el campo que contiene el archivo
 
+
+// Configuración de Cloudinary
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Actualizar un usuario
 const updateUser = async (req, res) => {
     const { id } = req.params;
     const { nombre, email, contraseña } = req.body;
+    let imagen_perfil = null;
 
     try {
-        console.log('Buscando usuario con ID:', id);
-
         // Verifica si el usuario existe
         const user = await User.findByPk(id);
         if (!user) {
-            console.log('Usuario no encontrado');
             return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
 
-        let imagen_perfil;
+        // Si se recibe una nueva imagen (Base64), la procesamos
+        if (req.body.imagen_perfil) {
+            console.log('Imagen recibida:', req.body.imagen_perfil);  // Log de la imagen recibida (Base64)
 
-        // Verifica si hay un archivo adjunto
-        if (req.file) {
-            console.log('Archivo recibido:', req.file);
-
-            const result = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream(
-                    { folder: 'user_profiles' },
-                    (error, result) => {
-                        if (error) {
-                            console.error('Error al subir a Cloudinary:', error);
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    }
-                );
-                req.file.stream.pipe(stream);
+            // Subir la imagen a Cloudinary
+            const result = await cloudinary.uploader.upload(req.body.imagen_perfil, {
+                folder: 'user_profiles',  // Se guarda en la carpeta user_profiles
             });
 
-            imagen_perfil = result.secure_url;
-            console.log('URL de la imagen subida:', imagen_perfil);
+            imagen_perfil = result.secure_url;  // Aquí se obtiene la URL pública de la imagen
+            console.log('Imagen subida a Cloudinary:', imagen_perfil);
+        } else {
+            imagen_perfil = user.imagen_perfil;  // Si no se recibió una nueva imagen, se conserva la antigua
         }
 
         // Datos a actualizar
@@ -150,15 +147,25 @@ const updateUser = async (req, res) => {
             nombre: nombre || user.nombre,
             email: email || user.email,
             contraseña: contraseña ? bcrypt.hashSync(contraseña, 8) : user.contraseña,
-            imagen_perfil: imagen_perfil || user.imagen_perfil,
+            imagen_perfil: imagen_perfil || user.imagen_perfil,  // Asegúrate de almacenar la URL
         };
 
-        console.log('Actualizando datos del usuario:', updatedData);
+        console.log('Datos a actualizar:', updatedData);
 
-        // Actualizar usuario
+        // Verificar si hubo cambios
+        if (
+            updatedData.nombre === user.nombre &&
+            updatedData.email === user.email &&
+            updatedData.contraseña === user.contraseña &&
+            updatedData.imagen_perfil === user.imagen_perfil
+        ) {
+            return res.json({ ok: true, message: 'No se realizaron cambios' });
+        }
+
+        // Actualizar el usuario
         await user.update(updatedData);
 
-        res.json({ ok: true, message: 'Usuario actualizado correctamente' });
+        res.json({ ok: true, message: 'Usuario actualizado correctamente', user: updatedData });
     } catch (err) {
         console.error('Error al actualizar el usuario:', err);
         res.status(500).json({ ok: false, message: 'Error al actualizar el usuario', error: err.message });
