@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperación de Contraseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8em;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Recuperación de Contraseña en Ticketify</h1>
+    </div>
+    <div class="content">
+        <h2>Solicitud de Cambio de Contraseña</h2>
+        <p>Estimado/a {{nombre}},</p>
+        <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no realizaste esta solicitud, por favor ignora este mensaje.</p>
+        <p>Para recuperar tu contraseña, por favor haz clic en el siguiente enlace:</p>
+        <a href="{{link_recuperacion}}" class="btn">Recuperar Contraseña</a>
+        <p>Si no puedes hacer clic en el botón, copia y pega este enlace en tu navegador:</p>
+        <p>{{link_recuperacion}}</p>
+    </div>
+    <div class="footer">
+        © 2024 Ticketify. Todos los derechos reservados.
+    </div>
+</body>
+</html>

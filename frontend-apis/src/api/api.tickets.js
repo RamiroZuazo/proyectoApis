@@ -15,9 +15,12 @@ export const createTicket = async (ticketData) => {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json', // Seguimos enviando como JSON
+            'Content-Type': 'application/json', // Seguimos enviando como JSON
         },
         body: JSON.stringify(ticketData), // Asegúrate de que ticketData contenga la URL de imagen
+        body: JSON.stringify(ticketData), // Asegúrate de que ticketData contenga la URL de imagen
     });
+
 
     if (!response.ok) {
         const errorData = await response.json();
@@ -26,7 +29,10 @@ export const createTicket = async (ticketData) => {
     }
 
     return await response.json(); // Retorna los datos del ticket creado
+
+    return await response.json(); // Retorna los datos del ticket creado
 };
+
 //-------------------------------------------------------------------------------------------------------//
 // Función obtener miembros del proyecto por id
 

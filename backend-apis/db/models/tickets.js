@@ -1,4 +1,3 @@
-// tickets.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 const Project = require('./projects');

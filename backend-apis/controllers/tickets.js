@@ -34,6 +34,7 @@ const createTicket = async (req, res) => {
 };
 
 
+
 const getTickets = async (req, res) => {
     try {
         const tickets = await ticketService.getTickets();
