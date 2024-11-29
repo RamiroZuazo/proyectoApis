@@ -7,7 +7,7 @@ const ProfileDropDown = (props) => {
     const [state, setState] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [userData, setUserData] = useState({
-        profilePicture: "https://randomuser.me/api/portraits/men/46.jpg", // Imagen por defecto
+        profilePicture: "http://surl.li/xjopwc", 
     });
     const profileRef = useRef();
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ const ProfileDropDown = (props) => {
             const response = await getLoggedUser();
             const { user } = response; // Asegúrate de que `user` es el objeto correcto con las propiedades necesarias
             setUserData({
-                profilePicture: user.imagen_perfil || "https://randomuser.me/api/portraits/men/46.jpg",
+                profilePicture: user.imagen_perfil ,
                 name: user.nombre || "Usuario desconocido", // Asegúrate de que el nombre esté definido
                 email: user.email || "Correo no disponible", // Asegúrate de que el correo esté definido
             });

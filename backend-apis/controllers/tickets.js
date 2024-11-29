@@ -1,13 +1,38 @@
 const ticketService = require('../services/tickets.js');
-
+const cloudinary = require('cloudinary').v2;
 const createTicket = async (req, res) => {
     try {
-        const ticket = await ticketService.createTicket(req.body);
-        res.status(201).json(ticket);
+        console.log("Cuerpo de la solicitud recibido:", req.body);  // Agregado para verificar los datos recibidos
+
+        let imagen_ticket = "";
+        if (req.body.imagen_ticket) {
+            // Subir la imagen a Cloudinary
+            const cloudinaryResponse = await cloudinary.uploader.upload(req.body.imagen_ticket, {
+                folder: 'tickets',
+            });
+            imagen_ticket = cloudinaryResponse.secure_url;
+        }
+
+        const ticketData = {
+            ...req.body,
+            imagen_ticket,
+        };
+
+        // Verifica que se esté recibiendo el campo 'usuario_responsable_id'
+        if (!ticketData.usuario_responsable_id) {
+            console.log(ticketData.imagen)
+            console.error("Error: No se proporcionó usuario_responsable_id.");
+            return res.status(400).json({ message: 'ID de usuario responsable no proporcionado' });
+        }
+
+        const ticket = await ticketService.createTicket(ticketData);  // Crear el ticket
+        res.status(201).json(ticket);  // Retorna el ticket creado
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error al crear el ticket:", error);
+        res.status(500).json({ message: error.message });  // En caso de error, retornamos un mensaje de error
     }
 };
+
 
 const getTickets = async (req, res) => {
     try {
@@ -18,18 +43,24 @@ const getTickets = async (req, res) => {
     }
 };
 
+// controller
 const getTicketsByProject = async (req, res) => {
     try {
         const { proyectoId } = req.params;
         const tickets = await ticketService.getTicketsByProject(proyectoId);
+        
+        // Verificar si se encontraron tickets
         if (tickets.length === 0) {
             return res.status(404).json({ message: 'No se encontraron tickets para este proyecto.' });
         }
+        
+        // Si hay tickets, devolverlos
         res.status(200).json(tickets);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 const getTicketsByUser = async (req, res) => {
     try {

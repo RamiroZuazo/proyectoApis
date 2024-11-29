@@ -24,22 +24,24 @@ const getTicketById = async (id) => {
 
 // Crear un nuevo ticket
 const createTicket = async (data) => {
-    const { fecha, monto, descripcion, proyecto_id, usuario_responsable_id } = data;
+    const { fecha, monto, descripcion, proyecto_id, usuario_responsable_id, imagen_ticket } = data;
 
-    // Verifica si el ID del usuario es válido (ya no buscamos por correo)
+    // Verifica si el ID del usuario es válido
     if (!usuario_responsable_id) {
         throw new Error('ID de usuario responsable no proporcionado');
     }
 
-    // Crear el ticket con el ID del usuario directamente
+    // Crear el ticket con todos los datos
     return await Ticket.create({
         fecha,
         monto,
         descripcion,
         proyecto_id,
         usuario_responsable_id,
+        imagen_ticket,  // Añadimos la imagen al crear el ticket
     });
 };
+
 
 
 // Actualizar un ticket
@@ -61,12 +63,14 @@ const deleteTicket = async (id) => {
 const getTicketsByProject = async (proyectoId) => {
     return await Ticket.findAll({
         where: { proyecto_id: proyectoId },
+        attributes: ['id', 'fecha', 'monto', 'descripcion', 'imagen_ticket'],  // Asegúrate de incluir 'imagen_ticket'
         include: [
             { model: Proyecto, as: 'proyecto', attributes: ['id', 'nombre', 'descripcion'] },
             { model: Usuario, as: 'usuario_responsable', attributes: ['id', 'nombre', 'email'] },
         ],
     });
 };
+
 
 // Obtener tickets por usuario
 const getTicketsByUser = async (email) => {

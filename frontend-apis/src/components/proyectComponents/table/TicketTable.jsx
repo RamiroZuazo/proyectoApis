@@ -4,20 +4,25 @@ import PhotoModal from "../modal/PhotoModal";
 import { getTicketsByProject } from "../../../api/api.tickets"; 
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined'; // Icono para previsualización
 import { useParams } from 'react-router-dom';
-const image = "/images/muestra-ticket-realista_23-2147938550.avif"; 
- 
-
 
 export default ({ proyectoId }) => {
     const [tableItems, setTableItems] = useState([]);
-    const [photoModalOpen, setPhotoModalOpen] = useState(false);
-    const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [photoModalOpen, setPhotoModalOpen] = useState(false); // Controla la visibilidad del modal
+    const [selectedPhoto, setSelectedPhoto] = useState(null); // Guarda la URL de la imagen seleccionada
     const { proyecto_id } = useParams(); 
+
     // Función para cerrar el modal de la foto
     const handleClosePhotoModal = () => {
-        setPhotoModalOpen(false);
-        setSelectedPhoto(null);
+        setPhotoModalOpen(false); // Cierra el modal
+        setSelectedPhoto(null);  // Resetea la imagen seleccionada
+    };
+
+    // Función para abrir el modal con la imagen seleccionada
+    const handleOpenPhotoModal = (imageUrl) => {
+        setSelectedPhoto(imageUrl); // Establece la imagen seleccionada
+        setPhotoModalOpen(true); // Abre el modal
     };
 
     // Función para eliminar un ticket
@@ -61,40 +66,45 @@ export default ({ proyectoId }) => {
                                 <td className="px-6 py-4 whitespace-nowrap">{item.fecha}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{`$${item.monto}`}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    {item.imagen && (
-                                        <PhotoModal
-                                            photoUrl={item.imagen} // Asume que cada ticket tiene un campo 'imagen'
-                                            open={photoModalOpen}
-                                            onClose={handleClosePhotoModal}
+                                    {item.imagen_ticket && (
+                                        <InsertPhotoOutlinedIcon
+                                            onClick={() => handleOpenPhotoModal(item.imagen_ticket)} // Al hacer clic, abre el modal con la imagen
+                                            className="cursor-pointer text-gray-600 hover:text-gray-500"
                                         />
                                     )}
                                 </td>
                                 <td className="text-right whitespace-nowrap">
-                                {/*
-                                <TicketModal
-                                    triggerText={<EditOutlinedIcon />}
-                                    triggerIcon={null}
-                                    modalTitle="Editar ticket"
-                                    buttonText="Editar"
-                                    buttonStyle="text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-200"
-                                    ticket={item} 
-                                    proyecto_id={proyecto_id}  // Asegúrate de pasar el proyecto_id aquí
-                                />
-                                */}                               
+                                    {/* Aquí tu componente TicketModal sigue intacto */}
+                                    {/* <TicketModal
+                                        triggerText={<EditOutlinedIcon />}
+                                        triggerIcon={null}
+                                        modalTitle="Editar ticket"
+                                        buttonText="Editar"
+                                        buttonStyle="text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-200"
+                                    /> */}
                                 </td>
-                                <td className="text-right whitespace-nowrap">
+                                {/*<td className="text-right whitespace-nowrap">
                                     <button
                                         className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-200 rounded-lg"
                                         onClick={() => handleDeleteItem(idx)} // Elimina el ticket
                                     >
                                         <DeleteOutlineOutlinedIcon />
                                     </button>
-                                </td>
+                                </td>*/}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            {/* Modal de la foto (visible cuando photoModalOpen es true) */}
+            {photoModalOpen && selectedPhoto && (
+                <PhotoModal
+                    photoUrl={selectedPhoto} // Le pasamos la URL de la imagen seleccionada
+                    open={photoModalOpen}
+                    onClose={handleClosePhotoModal}
+                />
+            )}
         </div>
     );
 };

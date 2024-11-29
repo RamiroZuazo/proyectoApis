@@ -8,19 +8,21 @@ import { getMembersByProjectId } from "../../../api/api.projects";
 import { createTicket } from "../../../api/api.tickets";
 import { getLoggedUser } from "../../../api/api.users";
 import { createGasto } from "../../../api/api.gastos";
-import dayjs from 'dayjs'; // Importa dayjs para formatear la fecha
+import dayjs from 'dayjs';
 
 const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonStyle, proyecto_id }) => {
     const [members, setMembers] = useState([]);
     const [divisionType, setDivisionType] = useState("equal");
     const [percentages, setPercentages] = useState({});
     const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [ticketData, setTicketData] = useState({
         fecha: "",
         monto: "",
         descripcion: "",
         proyecto_id: proyecto_id,
         usuario_responsable_id: null,
+        imagen_ticket: null,
     });
 
     useEffect(() => {
@@ -39,6 +41,8 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
                 console.error("Error al obtener el usuario logueado:", error);
             }
         };
+
+        
     
         const fetchMembers = async () => {
             if (!proyecto_id) {
@@ -63,6 +67,30 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
         initializeUser();
         fetchMembers();
     }, [proyecto_id]);
+
+    const handleFileSelect = (file) => {
+        if (file && file instanceof File) {
+            console.log('Archivo seleccionado:', file);  // Verifica el archivo
+    
+            // Crear un objeto FileReader para convertir el archivo en una URL
+            const reader = new FileReader();
+            
+            reader.onloadend = () => {
+                const fileDataUrl = reader.result; // El data URL del archivo
+                
+                setTicketData((prev) => ({
+                    ...prev,
+                    imagen_ticket: fileDataUrl, // Guardamos el data URL en el estado
+                }));
+            };
+    
+            reader.readAsDataURL(file); // Convierte el archivo a un data URL
+        } else {
+            console.error('No se seleccionó un archivo válido');
+        }
+    };
+    
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -122,7 +150,7 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
         
             // Esperar que se creen todos los gastos
             await Promise.all(gastoPromises);
-        
+            window.location.reload();
         } catch (error) {
             console.error("Error al crear el ticket o las deudas:", error);
         } finally {
@@ -205,7 +233,7 @@ const TicketModal = ({ triggerText, triggerIcon, modalTitle, buttonText, buttonS
                                     onChange={handleChange}
                                     required
                                 />
-                                <FileUpload />
+                                <FileUpload onFileSelect={handleFileSelect} />
                             </div>
                             <div>
                                 <h3 className="font-medium text-gray-700 mb-2">División del gasto</h3>

@@ -1,80 +1,125 @@
 import { useState, useEffect } from "react";
 import { getMembersByProjectId } from "../../../api/api.projects";
-import { getLoggedUser } from "../../../api/api.users";  // Para obtener el usuario logueado
+import { getLoggedUser } from "../../../api/api.users";
+import { getGastosPendientes } from "../../../api/api.gastos";
 
 export default ({ proyecto_id }) => {
     const [tableItems, setTableItems] = useState([
-        {
-            label: "A pagar",
-            title: "Miembros a pagar",
-            items: [],
-        },
-        {
-            label: "A cobrar",
-            title: "Miembros a cobrar",
-            items: [],
-        },
+        { label: "A pagar", title: "Miembros a pagar", items: [] },
+        { label: "A cobrar", title: "Miembros a cobrar", items: [] },
     ]);
     const [selectedItem, setSelectedItem] = useState(0);
-    const [loggedUserId, setLoggedUserId] = useState(null); // Estado para almacenar el ID del usuario logueado
-    const [loading, setLoading] = useState(true); // Estado de carga
+    const [loggedUserId, setLoggedUserId] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserAndMembers = async () => {
             try {
-                // Obtener el usuario logueado
                 const user = await getLoggedUser();
-                if (user && user.user && user.user.id) {
-                    setLoggedUserId(user.user.id);  // Guardamos el ID del usuario logueado
-                } else {
+                if (!user?.user?.id) {
                     console.error("No se pudo obtener el usuario logueado.");
                     setLoading(false);
                     return;
                 }
+                
+                const loggedUserId = user.user.id;
+                setLoggedUserId(loggedUserId);
 
-                // Obtener los miembros del proyecto
                 const data = await getMembersByProjectId(proyecto_id);
-                if (data?.proyecto?.Users) {
-                    const allMembers = data.proyecto.Users.map((miembro) => ({
-                        id: miembro.id,  // Añadimos el id del miembro
+                if (!data?.proyecto?.Users) {
+                    console.error("No se encontraron miembros en la respuesta.");
+                    setLoading(false);
+                    return;
+                }
+
+                // Filtrar miembros excluyendo al usuario logueado
+                const otherMembers = data.proyecto.Users.filter(miembro => miembro.id !== loggedUserId)
+                    .map(miembro => ({
+                        id: miembro.id,
                         nombre: miembro.nombre,
-                        Monto: "$0",  // Se puede ajustar si es necesario
-                        Estado: "Sin deuda",  // Se puede ajustar si es necesario
+                        Monto: "$0",
+                        Estado: "Sin deuda",
                     }));
 
-                    // Filtramos el miembro logueado para que no aparezca
-                    const filteredMembers = allMembers.filter(member => member.id !== loggedUserId);
+                // Proceso de obtención de gastos a pagar
+                const membersToPay = await Promise.all(
+                    otherMembers.map(async (member) => {
+                        try {
+                            const response = await getGastosPendientes(member.id, loggedUserId, proyecto_id);
+                            if (response.ok && response.gastos.length > 0) {
+                                const totalDeuda = response.gastos.reduce((acc, gasto) => acc + parseFloat(gasto.monto), 0);
+                                return {
+                                    ...member,
+                                    Monto: `$${totalDeuda.toFixed(2)}`,
+                                    Estado: "Deuda pendiente"
+                                };
+                            }
+                            return member;
+                        } catch (err) {
+                            console.error(`Error al obtener los gastos a pagar de ${member.nombre}:`, err);
+                            return member;
+                        }
+                    })
+                );
 
-                    // Actualizamos las solapas con los miembros filtrados
-                    setTableItems([
-                        { label: "A pagar", title: "Miembros a pagar", items: filteredMembers },
-                        { label: "A cobrar", title: "Miembros a cobrar", items: filteredMembers },
-                    ]);
-                } else {
-                    console.error("No se encontraron miembros en la respuesta.");
-                }
+                // Proceso de obtención de gastos a cobrar
+                const membersToCollect = await Promise.all(
+                    otherMembers.map(async (member) => {
+                        try {
+                            const response = await getGastosPendientes(loggedUserId, member.id, proyecto_id);
+                            if (response.ok && response.gastos.length > 0) {
+                                const totalDeuda = response.gastos.reduce((acc, gasto) => acc + parseFloat(gasto.monto), 0);
+                                return {
+                                    ...member,
+                                    Monto: `$${totalDeuda.toFixed(2)}`,
+                                    Estado: "Deuda pendiente"
+                                };
+                            }
+                            return member;
+                        } catch (err) {
+                            console.error(`Error al obtener los gastos a cobrar de ${member.nombre}:`, err);
+                            return member;
+                        }
+                    })
+                );
+
+                // Filtrar solo miembros con deudas
+                const filteredMembersToPay = membersToPay.filter(member => 
+                    parseFloat(member.Monto.replace('$', '').replace(',', '')) > 0
+                );
+
+                const filteredMembersToCollect = membersToCollect.filter(member => 
+                    parseFloat(member.Monto.replace('$', '').replace(',', '')) > 0
+                );
+
+                setTableItems([
+                    { label: "A pagar", title: "Miembros a pagar", items: filteredMembersToPay },
+                    { label: "A cobrar", title: "Miembros a cobrar", items: filteredMembersToCollect },
+                ]);
+
             } catch (err) {
                 console.error("Error al cargar los miembros:", err);
             } finally {
-                setLoading(false); // Desactivamos el estado de carga
+                setLoading(false);
             }
         };
 
         fetchUserAndMembers();
-    }, [proyecto_id]); // No depende de loggedUserId
+    }, [proyecto_id]);
 
     if (loading) {
-        return <div>Loading...</div>;  // Mostrar un mensaje de carga mientras obtenemos los datos
+        return <div>Loading...</div>;
     }
 
     return (
         <div className="max-w-screen-xl mx-auto px-4 md:px-8">
             <div className="text-sm mt-6 overflow-x-auto">
+                {/* Tab Navigation */}
                 <ul role="tablist" className="w-full border-b flex items-center gap-x-3 overflow-x-auto">
                     {tableItems.map((item, idx) => (
                         <li
                             key={idx}
-                            className={`py-2 border-b-2 ${selectedItem === idx ? "border-indigo-600 text-indigo-600" : "border-white text-gray-500"}`}
+                            className={`py-2 border-b-2 ${selectedItem === idx ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 hover:border-indigo-600"}`}
                         >
                             <button
                                 role="tab"
@@ -87,21 +132,27 @@ export default ({ proyecto_id }) => {
                         </li>
                     ))}
                 </ul>
-                <table className="w-full table-auto text-left">
-                    <thead className="text-gray-600 font-medium border-b">
+
+                {/* Data Table */}
+                <table className="w-full table-auto text-left mt-4">
+                    <thead className="text-gray-600 font-medium border-b ">
                         <tr>
-                            <th className="w-9/12 py-4 pr-6">{tableItems[selectedItem].title}</th>
-                            <th className="py-4 pr-6">Monto</th>
-                            <th className="py-4 pr-6 px-4">Estado</th>
+                            <th className="w-9/12 py-4 pr-6 text-left">{tableItems[selectedItem].title}</th>
+                            <th className="py-4 pr-6 text-left">Monto</th>
+                            <th className="py-4 pr-6 text-left px-4">Estado</th>
                         </tr>
                     </thead>
                     <tbody className="text-gray-600 divide-y">
                         {tableItems[selectedItem].items.map((item, idx) => (
-                            <tr key={idx}>
+                            <tr key={idx} className="hover:bg-gray-50">
                                 <td className="pr-6 py-4 whitespace-nowrap">{item.nombre}</td>
-                                <td className="pr-6 py-4 whitespace-nowrap text-indigo-600">{item.Monto}</td>
+                                <td className="pr-6 py-4 whitespace-nowrap text-indigo-600 font-semibold">{item.Monto}</td>
                                 <td className="pr-6 py-4 whitespace-nowrap">
-                                    <span className={`py-2 px-3 rounded-full font-semibold text-xs text-green-600 bg-green-50`}>{item.Estado}</span>
+                                    <span
+                                        className={`py-2 px-3 rounded-full font-semibold text-xs ${item.Estado === "Deuda pendiente" ? "text-red-600 bg-red-50" : "text-green-600 bg-green-50"}`}
+                                    >
+                                        {item.Estado}
+                                    </span>
                                 </td>
                             </tr>
                         ))}

@@ -38,9 +38,13 @@ const Ticket = sequelize.define('Ticket', {
             key: 'id',
         },
     },
+    imagen_ticket: {
+        type: DataTypes.STRING(255),  
+        allowNull: true,             
+    }
 }, {
     tableName: 'tickets',
-    timestamps: false,
+    timestamps: false,  // Si no necesitas campos como createdAt y updatedAt
 });
 
 // Relaciones
@@ -49,8 +53,5 @@ Ticket.belongsTo(User, { foreignKey: 'usuario_responsable_id', as: 'usuario_resp
 
 Project.hasMany(Ticket, { foreignKey: 'proyecto_id', as: 'tickets' });
 User.hasMany(Ticket, { foreignKey: 'usuario_responsable_id', as: 'tickets' });
-
-module.exports = Ticket;
-
 
 module.exports = Ticket;
