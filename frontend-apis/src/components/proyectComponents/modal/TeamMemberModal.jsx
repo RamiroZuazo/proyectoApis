@@ -88,7 +88,7 @@ export default function TeamMemberModal({ onMemberAdded }) {
             onClick={handleAddMember}
             disabled={loading}
           >
-            {loading ? "Agregando..." : "Invitar"}
+            {loading ? "Agregando..." : "Agregar"}
           </button>
         </Dialog.Content>
       </Dialog.Portal>

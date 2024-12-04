@@ -192,6 +192,25 @@ const deleteUser = async (req, res) => {
         res.status(500).json({ ok: false, message: 'Error al eliminar el usuario', error: err.message });
     }
 };
+// Obtener el correo de un usuario por su ID
+const getUserEmailById = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findOne({ where: { id: userId } });
+
+        if (!user) {
+            return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, email: user.email });
+    } catch (err) {
+        console.error('Error al obtener el correo:', err);
+        res.status(500).json({ ok: false, message: 'Error al obtener el correo del usuario', error: err.message });
+    }
+};
+
+
+
 
 module.exports = {
     loginUser,
@@ -199,6 +218,6 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUser, 
-    deleteUser,
-    getMailById  
+    deleteUser,  
+    getUserEmailById
 };
