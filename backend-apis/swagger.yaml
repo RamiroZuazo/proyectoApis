@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Users API
   description: API for managing users.
-host: localhost:3000
+host: localhost:8080
 basePath: /api
 schemes:
   - http
@@ -11,24 +11,28 @@ schemes:
 paths:
   /users:
     get:
-      summary: Get all users
-      description: Retrieves a list of all users.
+      summary: Get de todos los usuarios
+      description: Devuelve una lista de todos los usuarios.
       produces:
         - application/json
+      tags:
+        - Users
       responses:
         '200':
-          description: A list of users.
+          description: Lista de usuarios.
           schema:
             type: array
             items:
               $ref: '#/definitions/User'
     post:
-      summary: Create a new user
-      description: Creates a new user.
+      summary: Crear un nuevo usuario
+      description: Crea un nuevo usuario.
       consumes:
         - application/json
       produces:
         - application/json
+      tags:
+      - Users
       parameters:
         - in: body
           name: body
@@ -43,8 +47,10 @@ paths:
             $ref: '#/definitions/User'
   /users/{id}:
     get:
-      summary: Get user by ID
-      description: Retrieve a single user by their ID.
+      summary: Get Usuario por ID
+      description: Obtiene un usuario por su ID.
+      tags:
+        - Users
       produces:
         - application/json
       parameters:
@@ -61,8 +67,10 @@ paths:
         '404':
           description: User not found.
     put:
-      summary: Update user by ID
-      description: Updates a user by their ID.
+      summary: Update de un usuario por ID
+      description: Updatea un usuario mediante su ID.
+      tags:
+        - Users
       consumes:
         - application/json
       produces:
@@ -87,8 +95,10 @@ paths:
         '404':
           description: User not found.
     delete:
-      summary: Delete user by ID
-      description: Deletes a user by their ID.
+      summary: Borrar un usuario por ID
+      description: Borra a un usuario mediante su ID
+      tags:
+        - Users
       produces:
         - application/json
       parameters:
@@ -104,8 +114,10 @@ paths:
           description: User not found.
   /projects:
     get:
-      summary: Get all projects
-      description: Retrieve all projects from the database.
+      summary: Get de todos los proyectos
+      description: Trae todos los proyectos de la base de datos      
+      tags:
+        - Proyectos
       responses:
         '200':
           description: List of projects
@@ -114,8 +126,10 @@ paths:
             items:
               $ref: '#/definitions/Project'
     post:
-      summary: Create a new project
-      description: Add a new project to the database.
+      summary: Crear un nuevo proyecto
+      description: Agrega un proyecto a la base de datos
+      tags:
+        - Proyectos
       parameters:
         - in: body
           name: body
@@ -131,8 +145,10 @@ paths:
           description: Invalid input.
   /projects/{id}:
     get:
-      summary: Get project by ID
-      description: Retrieve a single project by its ID.
+      summary: Get de un proyecto por ID
+      description: Devuelve un proyecto mediante su ID
+      tags:
+        - Proyectos
       produces:
         - application/json
       parameters:
@@ -149,8 +165,10 @@ paths:
         '404':
           description: Project not found.
     put:
-      summary: Update project by ID
-      description: Updates a project by its ID.
+      summary: Update de un proyecto por ID
+      description: Actualiza un proyecto por su ID
+      tags:
+        - Proyectos
       consumes:
         - application/json
       produces:
@@ -175,8 +193,10 @@ paths:
         '404':
           description: Project not found.
     delete:
-      summary: Delete project by ID
-      description: Deletes a project by its ID.
+      summary: Borrar un proyecto por ID
+      description: Borra un proyecto por ID
+      tags:
+        - Proyectos
       produces:
         - application/json
       parameters:
@@ -193,10 +213,9 @@ paths:
   
   /tickets:
     get:
-      summary: Get all tickets
+      summary: Get de todos los tickets
       description: >-
-        Retrieve a list of all tickets, including related project and user
-        details.
+        Devuelve una lista de todos los tickets, incluyendo su proyecto relacionado y la información del usuario.
       tags:
         - Tickets
       responses:
@@ -207,8 +226,8 @@ paths:
             items:
               $ref: '#/definitions/Ticket'
     post:
-      summary: Create a new ticket
-      description: Create a new ticket with the specified details.
+      summary: Crear un nuevo ticket
+      description: Crea un nuevo ticket
       tags:
         - Tickets
       parameters:
@@ -224,8 +243,8 @@ paths:
             $ref: '#/definitions/Ticket'
   /tickets/{id}:
     get:
-      summary: Get a ticket by ID
-      description: Retrieve details of a ticket by its ID.
+      summary: Obtiene un ticket por su ID
+      description: Obtiene la información de un ticket por su ID
       tags:
         - Tickets
       parameters:
@@ -240,8 +259,8 @@ paths:
           schema:
             $ref: '#/definitions/Ticket'
     put:
-      summary: Update a ticket
-      description: Update details of a ticket by its ID.
+      summary: Actualizar un ticket
+      description: Actualiza un ticket
       tags:
         - Tickets
       parameters:
@@ -261,8 +280,8 @@ paths:
           schema:
             $ref: '#/definitions/Ticket'
     delete:
-      summary: Delete a ticket
-      description: Delete a ticket by its ID.
+      summary: Borrar un ticket por ID
+      description: Borra un ticket por ID
       tags:
         - Tickets
       parameters:
@@ -276,8 +295,8 @@ paths:
           description: Ticket deleted successfully.
   /tickets/project/{projectId}:
     get:
-      summary: Get tickets by project
-      description: Retrieve a list of tickets associated with a specific project.
+      summary: Obtener tickets por proyecto
+      description: Devuelve una lista de los tickets associados a un proyecto en específico.
       tags:
         - Tickets
       parameters:
@@ -295,8 +314,8 @@ paths:
               $ref: '#/definitions/Ticket'
   /tickets/user/{email}:
     get:
-      summary: Get tickets by user
-      description: Retrieve a list of tickets associated with a specific user.
+      summary: Get de los tickets de un usuario
+      description: Devuelve una lista de los tickets associados a un usuario en específico
       tags:
         - Tickets
       parameters:
@@ -315,10 +334,11 @@ paths:
 
   /gastos/dividir:
     post:
-      summary: Divide expenses among project members
+      summary: Dividir los gastos entre los miembros del proyecto
       description: >-
-        Divides the expenses of a ticket among all the members of the respective
-        project.
+        Dividir los gastos entre los miembros del respectivo proyecto
+      tags:
+        - Gastos
       consumes:
         - application/json
       parameters:
@@ -351,8 +371,10 @@ paths:
 
   /gastos/{usuarioId}:
     get:
-      summary: Get expenses for a user
-      description: Retrieve all expenses associated with a specific user.
+      summary: Get gastos de un usuario
+      description: Devuelve todos los gastos asociados a un usuario
+      tags:
+        - Gastos
       parameters:
         - name: usuarioId
           in: path
@@ -373,8 +395,10 @@ paths:
 
   /gastos/marcar-pagado:
     post:
-      summary: Mark expenses as paid
-      description: Marks all expenses of a user in a specific project as paid.
+      summary: Marcar gasto como pagado
+      description: Marca el gasto de un usuario como pagado
+      tags:
+        - Gastos
       consumes:
         - application/json
       parameters:
