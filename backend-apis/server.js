@@ -5,7 +5,8 @@ const userRoutes = require('./routes/users');
 const projectRoutes = require('./routes/projects');
 const ticketRoutes = require('./routes/tickets');
 const gastoRoutes = require('./routes/gastos_miembros');
-const emailRoutes = require('./routes/mail'); // Importar las rutas de correo
+const emailRoutes = require('./routes/mail'); 
+const authRoutes = require('./routes/auth');
 const swagger = require('swagger-ui-express');
 
 const app = express();
@@ -23,7 +24,7 @@ app.use('/api/tickets', ticketRoutes);
 app.use('/api/gastos', gastoRoutes);
 
 // Rutas para envío de correos
-app.use('/api', emailRoutes);  // Asegúrate de que las rutas de correos están bajo /api
+app.use('/api', emailRoutes,authRoutes);  // Asegúrate de que las rutas de correos están bajo /api
 
 app.use('/api-docs', swagger.serve, swagger.setup(require('./swagger2.json')));
 

@@ -1,7 +1,5 @@
 const dotenv = require('dotenv');
-const {
-  Resend
-} = require('resend');
+const { Resend } = require('resend');
 dotenv.config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -9,10 +7,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const sendMail = async (email, subject, htmlTemplate) => {
   try {
     const response = await resend.emails.send({
-      from: 'Ticketify <onboarding@resend.dev>',
+      from: 'Ticketify <onboarding@resend.dev>', // Cambiar por un remitente válido si es necesario
       to: email,
       subject,
-      html: htmlTemplate
+      html: htmlTemplate,
     });
 
     if (response && response.data && response.data.id) {
@@ -23,11 +21,10 @@ const sendMail = async (email, subject, htmlTemplate) => {
       throw new Error('No se pudo enviar el correo, no se recibió un ID válido.');
     }
   } catch (error) {
-    console.error('Error al enviar el correo:', error);
+    console.error('Error al enviar el correo:', error.message);
     throw new Error('Error al enviar el correo: ' + error.message);
   }
 };
-
 
 module.exports = {
   sendMail,

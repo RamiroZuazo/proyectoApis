@@ -8,6 +8,7 @@ import Layout from './components/layout/layout.jsx';
 import Proyect from './pages/project.js';
 import ForgotPassword from './pages/forgotPassword.js';
 import UserProfile from './pages/profile';
+import ChangePassword from './components/auth/ChangePassword.jsx';
 
 // Componente para proteger rutas
 const PrivateRoute = ({ children }) => {
@@ -25,7 +26,7 @@ function App() {
                 <Route path="/SignIn" element={<SignIn />} />
                 <Route path="/SignUp" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-
+                <Route path="/ChangePassword" element={<ChangePassword />} />
                 {/* Rutas protegidas con Layout */}
                 <Route
                     path="/"
