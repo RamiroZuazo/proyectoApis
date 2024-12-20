@@ -5,7 +5,7 @@
     "title": "Users API",
     "description": "API for managing users."
   },
-  "host": "localhost:3000",
+  "host": "localhost:8080",
   "basePath": "/api",
   "schemes": [
     "http",
@@ -14,14 +14,17 @@
   "paths": {
     "/users": {
       "get": {
-        "summary": "Get all users",
-        "description": "Retrieves a list of all users.",
+        "summary": "Get de todos los usuarios",
+        "description": "Devuelve una lista de todos los usuarios.",
         "produces": [
           "application/json"
         ],
+        "tags": [
+          "Users"
+        ],
         "responses": {
           "200": {
-            "description": "A list of users.",
+            "description": "Lista de usuarios.",
             "schema": {
               "type": "array",
               "items": {
@@ -32,13 +35,16 @@
         }
       },
       "post": {
-        "summary": "Create a new user",
-        "description": "Creates a new user.",
+        "summary": "Crear un nuevo usuario",
+        "description": "Crea un nuevo usuario.",
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
+        ],
+        "tags": [
+          "Users"
         ],
         "parameters": [
           {
@@ -63,8 +69,11 @@
     },
     "/users/{id}": {
       "get": {
-        "summary": "Get user by ID",
-        "description": "Retrieve a single user by their ID.",
+        "summary": "Get Usuario por ID",
+        "description": "Obtiene un usuario por su ID.",
+        "tags": [
+          "Users"
+        ],
         "produces": [
           "application/json"
         ],
@@ -90,8 +99,11 @@
         }
       },
       "put": {
-        "summary": "Update user by ID",
-        "description": "Updates a user by their ID.",
+        "summary": "Update de un usuario por ID",
+        "description": "Updatea un usuario mediante su ID.",
+        "tags": [
+          "Users"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -129,8 +141,11 @@
         }
       },
       "delete": {
-        "summary": "Delete user by ID",
-        "description": "Deletes a user by their ID.",
+        "summary": "Borrar un usuario por ID",
+        "description": "Borra a un usuario mediante su ID",
+        "tags": [
+          "Users"
+        ],
         "produces": [
           "application/json"
         ],
@@ -155,8 +170,11 @@
     },
     "/projects": {
       "get": {
-        "summary": "Get all projects",
-        "description": "Retrieve all projects from the database.",
+        "summary": "Get de todos los proyectos",
+        "description": "Trae todos los proyectos de la base de datos",
+        "tags": [
+          "Proyectos"
+        ],
         "responses": {
           "200": {
             "description": "List of projects",
@@ -170,8 +188,11 @@
         }
       },
       "post": {
-        "summary": "Create a new project",
-        "description": "Add a new project to the database.",
+        "summary": "Crear un nuevo proyecto",
+        "description": "Agrega un proyecto a la base de datos",
+        "tags": [
+          "Proyectos"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -197,8 +218,11 @@
     },
     "/projects/{id}": {
       "get": {
-        "summary": "Get project by ID",
-        "description": "Retrieve a single project by its ID.",
+        "summary": "Get de un proyecto por ID",
+        "description": "Devuelve un proyecto mediante su ID",
+        "tags": [
+          "Proyectos"
+        ],
         "produces": [
           "application/json"
         ],
@@ -224,8 +248,11 @@
         }
       },
       "put": {
-        "summary": "Update project by ID",
-        "description": "Updates a project by its ID.",
+        "summary": "Update de un proyecto por ID",
+        "description": "Actualiza un proyecto por su ID",
+        "tags": [
+          "Proyectos"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -263,8 +290,11 @@
         }
       },
       "delete": {
-        "summary": "Delete project by ID",
-        "description": "Deletes a project by its ID.",
+        "summary": "Borrar un proyecto por ID",
+        "description": "Borra un proyecto por ID",
+        "tags": [
+          "Proyectos"
+        ],
         "produces": [
           "application/json"
         ],
@@ -287,10 +317,183 @@
         }
       }
     },
+    "/projects/{id}/members": {
+      "post": {
+        "summary": "Añadir un miembro a un proyecto",
+        "description": "Añade un usuario a un proyecto existente con un rol específico.",
+        "tags": [
+          "Proyectos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "description": "ID del proyecto."
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuario_id": {
+                  "type": "integer",
+                  "description": "ID del usuario a añadir."
+                },
+                "rol": {
+                  "type": "string",
+                  "description": "Rol del usuario en el proyecto."
+                }
+              },
+              "required": [
+                "usuario_id",
+                "rol"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario añadido al proyecto exitosamente."
+          },
+          "400": {
+            "description": "Proyecto o usuario no encontrado."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      },
+      "get": {
+        "summary": "Obtener miembros de un proyecto",
+        "description": "Devuelve una lista de los usuarios asociados a un proyecto, incluyendo sus roles.",
+        "tags": [
+          "Proyectos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "description": "ID del proyecto."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de miembros del proyecto devuelta exitosamente.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "ID del usuario."
+                  },
+                  "nombre": {
+                    "type": "string",
+                    "description": "Nombre del usuario."
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Email del usuario."
+                  },
+                  "rol": {
+                    "type": "string",
+                    "description": "Rol del usuario en el proyecto."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Proyecto no encontrado."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
+    "/projects/{id}/members/{email}": {
+      "delete": {
+        "summary": "Eliminar miembro de un proyecto por email",
+        "description": "Elimina a un usuario de un proyecto específico usando su email.",
+        "tags": [
+          "Proyectos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "description": "ID del proyecto."
+          },
+          {
+            "in": "path",
+            "name": "email",
+            "required": true,
+            "type": "string",
+            "description": "Email del usuario a eliminar."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado del proyecto exitosamente."
+          },
+          "404": {
+            "description": "Proyecto o usuario no encontrado."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
+    "/projects/user/{userId}": {
+      "get": {
+        "summary": "Obtener proyectos asociados a un usuario",
+        "description": "Devuelve una lista de proyectos a los que un usuario está asociado.",
+        "tags": [
+          "Proyectos"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de proyectos devuelta exitosamente.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
+            }
+          },
+          "404": {
+            "description": "Usuario no tiene proyectos asociados."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
     "/tickets": {
       "get": {
-        "summary": "Get all tickets",
-        "description": "Retrieve a list of all tickets, including related project and user details.",
+        "summary": "Get de todos los tickets",
+        "description": "Devuelve una lista de todos los tickets, incluyendo su proyecto relacionado y la información del usuario.",
         "tags": [
           "Tickets"
         ],
@@ -307,8 +510,8 @@
         }
       },
       "post": {
-        "summary": "Create a new ticket",
-        "description": "Create a new ticket with the specified details.",
+        "summary": "Crear un nuevo ticket",
+        "description": "Crea un nuevo ticket",
         "tags": [
           "Tickets"
         ],
@@ -334,8 +537,8 @@
     },
     "/tickets/{id}": {
       "get": {
-        "summary": "Get a ticket by ID",
-        "description": "Retrieve details of a ticket by its ID.",
+        "summary": "Obtiene un ticket por su ID",
+        "description": "Obtiene la información de un ticket por su ID",
         "tags": [
           "Tickets"
         ],
@@ -358,8 +561,8 @@
         }
       },
       "put": {
-        "summary": "Update a ticket",
-        "description": "Update details of a ticket by its ID.",
+        "summary": "Actualizar un ticket",
+        "description": "Actualiza un ticket",
         "tags": [
           "Tickets"
         ],
@@ -390,8 +593,8 @@
         }
       },
       "delete": {
-        "summary": "Delete a ticket",
-        "description": "Delete a ticket by its ID.",
+        "summary": "Borrar un ticket por ID",
+        "description": "Borra un ticket por ID",
         "tags": [
           "Tickets"
         ],
@@ -413,8 +616,8 @@
     },
     "/tickets/project/{projectId}": {
       "get": {
-        "summary": "Get tickets by project",
-        "description": "Retrieve a list of tickets associated with a specific project.",
+        "summary": "Obtener tickets por proyecto",
+        "description": "Devuelve una lista de los tickets associados a un proyecto en específico.",
         "tags": [
           "Tickets"
         ],
@@ -442,8 +645,8 @@
     },
     "/tickets/user/{email}": {
       "get": {
-        "summary": "Get tickets by user",
-        "description": "Retrieve a list of tickets associated with a specific user.",
+        "summary": "Get de los tickets de un usuario",
+        "description": "Devuelve una lista de los tickets associados a un usuario en específico",
         "tags": [
           "Tickets"
         ],
@@ -471,8 +674,11 @@
     },
     "/gastos/dividir": {
       "post": {
-        "summary": "Divide expenses among project members",
-        "description": "Divides the expenses of a ticket among all the members of the respective project.",
+        "summary": "Dividir los gastos entre los miembros del proyecto",
+        "description": "Dividir los gastos entre los miembros del respectivo proyecto",
+        "tags": [
+          "Gastos"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -521,8 +727,11 @@
     },
     "/gastos/{usuarioId}": {
       "get": {
-        "summary": "Get expenses for a user",
-        "description": "Retrieve all expenses associated with a specific user.",
+        "summary": "Get gastos de un usuario",
+        "description": "Devuelve todos los gastos asociados a un usuario",
+        "tags": [
+          "Gastos"
+        ],
         "parameters": [
           {
             "name": "usuarioId",
@@ -553,8 +762,11 @@
     },
     "/gastos/marcar-pagado": {
       "post": {
-        "summary": "Mark expenses as paid",
-        "description": "Marks all expenses of a user in a specific project as paid.",
+        "summary": "Marcar gasto como pagado",
+        "description": "Marca el gasto de un usuario como pagado",
+        "tags": [
+          "Gastos"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -605,6 +817,110 @@
           },
           "500": {
             "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/gastos/crear": {
+      "post": {
+        "summary": "Crear un nuevo gasto",
+        "description": "Registra un nuevo gasto asociado a un ticket y un usuario.",
+        "tags": [
+          "Gastos"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ticketId": {
+                  "type": "integer",
+                  "description": "ID del ticket asociado al gasto."
+                },
+                "usuarioId": {
+                  "type": "integer",
+                  "description": "ID del usuario responsable del gasto."
+                },
+                "monto": {
+                  "type": "number",
+                  "description": "Monto del gasto."
+                }
+              },
+              "required": [
+                "ticketId",
+                "usuarioId",
+                "monto"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Gasto creado exitosamente.",
+            "schema": {
+              "$ref": "#/definitions/GastoMiembro"
+            }
+          },
+          "400": {
+            "description": "Datos inválidos."
+          },
+          "500": {
+            "description": "Error interno del servidor."
+          }
+        }
+      }
+    },
+    "/gastos/pendientes": {
+      "get": {
+        "summary": "Obtener gastos pendientes",
+        "description": "Devuelve una lista de los gastos pendientes de un usuario deudor relacionados con un responsable y un proyecto.",
+        "tags": [
+          "Gastos"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "usuarioResponsableId",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario responsable."
+          },
+          {
+            "in": "query",
+            "name": "usuarioDeudorId",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario deudor."
+          },
+          {
+            "in": "query",
+            "name": "proyectoId",
+            "required": true,
+            "type": "integer",
+            "description": "ID del proyecto asociado."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de gastos pendientes devuelta exitosamente.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GastoMiembro"
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron gastos pendientes."
+          },
+          "500": {
+            "description": "Error interno del servidor."
           }
         }
       }
