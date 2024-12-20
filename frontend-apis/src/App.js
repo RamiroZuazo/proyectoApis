@@ -9,7 +9,7 @@ import Proyect from './pages/project.js';
 import ForgotPassword from './pages/forgotPassword.js';
 import UserProfile from './pages/profile';
 import ChangePassword from './components/auth/ChangePassword.jsx';
-
+import Documentación from './pages/apiDoc.js';
 // Componente para proteger rutas
 const PrivateRoute = ({ children }) => {
     const token = sessionStorage.getItem("access-token"); 
@@ -27,6 +27,7 @@ function App() {
                 <Route path="/SignUp" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/ChangePassword" element={<ChangePassword />} />
+                <Route path="/docs" element={<Documentación />} />
                 {/* Rutas protegidas con Layout */}
                 <Route
                     path="/"
